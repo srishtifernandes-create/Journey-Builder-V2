@@ -255,3 +255,47 @@ canvas gesture would produce. There is exactly one pipeline, regardless of origi
 ### Date
 
 14 July 2026
+
+## Decision 015
+
+### Title
+
+Selection Firehose Investigation Deferred
+
+### Reason
+
+During verification of Decision 014, a pre-existing runtime defect was discovered:
+React Flow continuously emits empty selectionChange events even when the canvas is
+idle, with no user interaction taking place.
+
+This defect was confirmed to reproduce on the untouched Sprint 06 baseline (verified
+by temporarily reverting Decision 014's changes and re-testing). It is therefore not
+caused by, and is not a consequence of, Decision 014.
+
+Decision 014 remains complete and correct. SelectionStore is the single source of
+truth for selection state, Canvas Runtime emits intent only, and CanvasEngineProvider
+is the sole translation point into application state, exactly as specified.
+
+No workaround, guard, or duplicated state will be introduced to mask this defect.
+Masking a runtime-level event-emission bug with application-level guards would
+reintroduce the same class of architectural risk Decision 014 was written to
+eliminate — a second, informal source of truth papering over the real defect.
+
+The issue will be investigated separately, under its own dedicated bug
+investigation document, to preserve the architectural integrity established by
+Decision 014.
+
+### Invariants
+
+- Decision 014's architecture is not modified, reverted, or worked around as a
+  result of this defect.
+- No selection-related guard, debounce, or synchronization logic is added outside
+  the pipeline Decision 014 already defines.
+- The defect is tracked and investigated as BUGFIX_001_SELECTION_FIREHOSE,
+  independent of any sprint's feature scope.
+- Sprint 07 remains blocked until the defect is resolved and node selection is
+  confirmed functioning correctly end-to-end.
+
+### Date
+
+14 July 2026

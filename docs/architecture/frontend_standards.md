@@ -631,15 +631,19 @@ Selection is interaction state.
 
 Document state and interaction state must never exist in the same store.
 
-JourneyStore owns graph data.
+SelectionStore is the only source of truth for node selection.
 
-SelectionStore owns canvas selection.
+JourneyStore must never own selection state again.
+
+Canvas Runtime emits intent only. It never imports or writes to a Zustand store.
+
+CanvasEngineProvider is the only bridge between runtime events and application stores.
 
 React Flow is an interaction source only.
 
-Canvas Runtime is responsible for translating interaction events into application state.
-
 Presentation components must never synchronize selection between stores.
+
+Runtime bugs must be fixed at their source rather than introducing duplicated state or synchronization workarounds.
 
 ### Business Logic Separation
 
