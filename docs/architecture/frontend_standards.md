@@ -616,3 +616,39 @@ STOP
 and ask.
 
 No component should exceed approximately 250 lines of implementation code. If a component grows beyond that, extract child components or hooks
+
+Import ordering rule.
+
+Maximum component size (~250 lines).
+
+Every manager/provider must expose a dispose() lifecycle method.
+
+Layout constants belong in config/layout.ts.
+
+### Business Logic Separation
+
+Business logic must never live inside React components.
+
+Responsibilities are divided as follows:
+
+- Components render UI.
+- Hooks coordinate UI behaviour.
+- Runtime managers execute canvas interactions.
+- Zustand stores persist application state.
+- Utility modules contain pure functions.
+
+Components should remain declarative and presentation-focused.
+
+### Architecture Freeze
+
+Canvas Runtime
+
+Workspace Shell
+
+Node Platform
+
+are considered stable architecture.
+
+Future sprints must extend these systems.
+
+They must not restructure them unless an Architecture Decision Record explicitly approves the change.

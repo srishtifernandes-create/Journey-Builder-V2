@@ -77,6 +77,10 @@ export function bootstrapNodeFoundation() {
     component: ScreenNodeRenderer,
     defaultWidth: 180,
     defaultHeight: 72,
+    minWidth: 140,
+    minHeight: 64,
+    supportsPorts: ['top', 'bottom'],
+    resizePolicy: 'fixed',
   })
 
   // 4. Register Terminal Node Renderer
@@ -85,6 +89,10 @@ export function bootstrapNodeFoundation() {
     component: TerminalNodeRenderer,
     defaultWidth: 120,
     defaultHeight: 48,
+    minWidth: 100,
+    minHeight: 40,
+    supportsPorts: ['top'],
+    resizePolicy: 'fixed',
   })
 
   console.log('Node Foundation bootstrapped successfully.')

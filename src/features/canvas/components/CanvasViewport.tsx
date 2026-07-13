@@ -6,6 +6,8 @@ import { useJourneyStore } from '../../../app/store/journeyStore'
 import { RendererRegistry } from '../../nodes/registry/RendererRegistry'
 import '@xyflow/react/dist/style.css'
 
+const FALLBACK_NODE_TYPE = '__fallback__'
+
 function CanvasViewportInner() {
   const reactFlow = useReactFlow()
   const runtime = useCanvasRuntime()
@@ -15,20 +17,24 @@ function CanvasViewportInner() {
 
   const adapter = useMemo(() => new ReactFlowAdapter(), [])
 
-  // Map registered node renderers to React Flow nodeTypes
+  // Map registered node renderers to React Flow nodeTypes, plus the fallback renderer
   const nodeTypes = useMemo(() => {
-    const types: Record<string, any> = {}
+    const types: Record<string, any> = {
+      [FALLBACK_NODE_TYPE]: RendererRegistry.getRenderer(FALLBACK_NODE_TYPE).component,
+    }
     RendererRegistry.getAllRenderers().forEach((def) => {
       types[def.type] = def.component
     })
     return types
   }, [])
 
-  // Map canvas nodes to React Flow node schema with selection status mapping
+  // Map canvas nodes to React Flow node schema with selection status mapping.
+  // Unregistered types are remapped to the fallback key so React Flow never
+  // throws on an unknown node.type.
   const rfNodes = useMemo(() => {
     return nodes.map((node) => ({
       id: node.id,
-      type: node.type,
+      type: RendererRegistry.hasRenderer(node.type) ? node.type : FALLBACK_NODE_TYPE,
       position: node.position,
       data: { node },
       selected: node.uiState.status === 'selected',

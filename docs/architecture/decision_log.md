@@ -139,3 +139,40 @@ Rendering behavior is metadata-driven.
 Port creation is delegated to PortFactory.
 
 NodeFactory never constructs ports directly.
+
+## Decision 012
+
+## Decision 012
+
+Title
+
+JourneyStore owns node visual selection.
+
+Reason
+
+Node visual state is part of the graph model.
+
+SelectionStore represents interaction state and mirrors the currently selected node.
+
+Rendering must derive from JourneyStore to avoid multiple sources of truth.
+
+Date
+14 July 2026
+
+## Decision 013
+
+Title
+
+ICanvasAdapter exposes coordinate transformation.
+
+Reason
+
+Coordinate conversion is considered part of the graph engine abstraction.
+
+Canvas Runtime must not depend directly on React Flow APIs.
+
+Future graph engines must implement the same adapter contract.
+
+Date
+
+14 July 2026
