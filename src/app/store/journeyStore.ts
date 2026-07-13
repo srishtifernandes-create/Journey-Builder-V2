@@ -1,12 +1,5 @@
 import { create } from 'zustand'
-
-export interface Node {
-  id: string
-  type: string
-  position: { x: number; y: number }
-  config: Record<string, any>
-  rules?: Record<string, any>
-}
+import type { INode } from '../../features/nodes/contracts/INode'
 
 export interface Edge {
   id: string
@@ -24,10 +17,10 @@ export interface JourneyMetadata {
 }
 
 export interface JourneyState {
-  nodes: Node[]
+  nodes: INode[]
   edges: Edge[]
   metadata: JourneyMetadata | null
-  setNodes: (nodes: Node[]) => void
+  setNodes: (nodes: INode[]) => void
   setEdges: (edges: Edge[]) => void
   setMetadata: (metadata: JourneyMetadata) => void
 }
