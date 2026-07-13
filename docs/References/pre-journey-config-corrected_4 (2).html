@@ -1,0 +1,1425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OnboardIQ — Pre Journey Configurations</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ─── LoKey v2.0 Token Layer ─────────────────────────────────────── */
+    :root {
+      /* Neutral */
+      --ink:           #131A25; /* color.neutral.900 */
+      --ink-muted:     #64748b; /* color.neutral.500 */
+      --ink-subtle:    #94a3b8; /* color.neutral.400 */
+      --surface:       #ffffff;
+      --bg:            #f8fafc; /* color.neutral.50  */
+      --border:        #e2e8f0; /* color.neutral.200 */
+      --border-hover:  #cbd5e1; /* color.neutral.300 */
+
+      /* Primary — color.primary.500 */
+      --primary:        #1766D6;
+      --primary-hover:  #1254b5;
+      --primary-bg:     #EBF3FF;
+      --primary-border: #bfdbfe;
+
+      /* Success */
+      --success:        #059669;
+      --success-bg:     #ecfdf5;
+      --success-border: #a7f3d0;
+
+      /* Warning */
+      --warning:        #d97706;
+      --warning-bg:     #fffbeb;
+      --warning-border: #fde68a;
+
+      /* Error */
+      --error:          #dc2626;
+      --error-bg:       #fef2f2;
+      --error-border:   #fecaca;
+
+      /* Disabled state tokens */
+      --disabled-bg:    rgba(23,102,214,0.08);  /* primary @ 8% opacity */
+      --disabled-text:  rgba(19,26,37,0.38);    /* ink @ 38% opacity    */
+
+      /* Elevation */
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.10), 0 2px 4px -2px rgba(0,0,0,0.10);
+      --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.10), 0 4px 6px -4px rgba(0,0,0,0.10);
+
+      /* Radius */
+      --radius-sm: 6px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+
+      /* Typography — Desktop Paragraph MD */
+      --type-body-md-size:    14px;
+      --type-body-md-lh:      1.5;
+      --type-body-sm-size:    13px;
+      --type-label-size:      11px;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: var(--type-body-md-size);
+      line-height: var(--type-body-md-lh);
+      background: var(--bg);
+      color: var(--ink);
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ─── App Shell ──────────────────────────────────────────────────── */
+    .app-shell {
+      display: grid;
+      grid-template-rows: 56px 1fr;
+      height: 100vh;
+    }
+
+    /* ─── Top Header ─────────────────────────────────────────────────── */
+    .top-header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+    }
+    .header-left { display: flex; align-items: center; gap: 16px; }
+    .logo { display: flex; align-items: center; gap: 8px; }
+    .logo-mark {
+      width: 28px; height: 28px;
+      background: linear-gradient(135deg, var(--primary) 0%, #1254b5 100%);
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .logo-mark svg { width: 16px; height: 16px; fill: white; }
+    .logo-text { font-weight: 600; font-size: 15px; color: var(--ink); }
+
+    .breadcrumb { display: flex; align-items: center; gap: 8px; color: var(--ink-muted); font-size: 13px; }
+    .breadcrumb a { color: var(--ink-muted); text-decoration: none; }
+    .breadcrumb a:hover { color: var(--primary); }
+    .breadcrumb-sep { color: var(--ink-subtle); }
+    .breadcrumb-current { color: var(--ink); font-weight: 500; }
+
+    .header-right { display: flex; align-items: center; gap: 10px; }
+    .header-btn {
+      display: flex; align-items: center; gap: 6px;
+      /* Standard Button M — height: 36px */
+      height: 36px;
+      padding: 0 14px;
+      font-size: var(--type-body-sm-size);
+      font-weight: 500;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      font-family: inherit;
+    }
+    .btn-ghost   { background: transparent; border: none; color: var(--ink-muted); }
+    .btn-ghost:hover { background: var(--bg); color: var(--ink); }
+    .btn-secondary { background: var(--surface); border: 1px solid var(--border); color: var(--ink); }
+    .btn-secondary:hover { border-color: var(--border-hover); background: var(--bg); }
+    .btn-primary { background: var(--primary); border: 1px solid var(--primary); color: white; }
+    .btn-primary:hover { background: var(--primary-hover); }
+    .btn-dark { background: var(--ink); border: 1px solid var(--ink); color: white; }
+    .btn-dark:hover { background: #1e293b; }
+
+    .draft-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 3px 10px;
+      background: var(--warning-bg); border: 1px solid var(--warning-border);
+      border-radius: 100px; font-size: 12px; font-weight: 500; color: var(--warning);
+    }
+    .draft-badge::before {
+      content: ''; width: 6px; height: 6px;
+      border-radius: 50%; background: var(--warning);
+    }
+    .journey-title-row {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .journey-name {
+      font-size: 15px; font-weight: 600; color: var(--ink);
+    }
+    .edit-icon {
+      width: 18px; height: 18px; display: flex; align-items: center; justify-content: center;
+      color: var(--ink-muted); cursor: pointer;
+    }
+
+    .avatar {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: linear-gradient(135deg, #818cf8, #6366f1);
+      display: flex; align-items: center; justify-content: center;
+      color: white; font-weight: 600; font-size: 12px;
+    }
+
+    /* ─── Page Layout ────────────────────────────────────────────────── */
+    .page-body {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    /* ─── Left Sidebar ───────────────────────────────────────────────── */
+    .sidebar {
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex; flex-direction: column;
+      overflow-y: auto;
+      padding: 24px 0;
+    }
+    .sidebar-progress {
+      padding: 0 20px 20px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 24px;
+    }
+    .progress-label {
+      display: flex; justify-content: space-between; align-items: baseline;
+      font-size: 12px; color: var(--ink-muted); margin-bottom: 8px;
+    }
+    .progress-pct { font-weight: 700; color: var(--ink); font-size: 14px; }
+    .progress-bar {
+      height: 4px; background: var(--border); border-radius: 2px; overflow: hidden;
+      margin-bottom: 6px;
+    }
+    .progress-fill {
+      height: 100%; width: 20%;
+      background: var(--primary); border-radius: 2px;
+      transition: width 0.3s ease;
+    }
+    .progress-sub { font-size: 11px; color: var(--ink-subtle); }
+
+    .stages-label {
+      padding: 0 20px 10px;
+      font-size: var(--type-label-size); font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.06em;
+      color: var(--ink-subtle);
+    }
+
+    .config-stage-item {
+      display: flex; flex-direction: column; gap: 4px;
+      padding: 12px 20px;
+      cursor: pointer;
+      border-left: 3px solid transparent;
+      transition: all 0.15s ease;
+    }
+    .config-stage-item:hover { background: var(--bg); }
+    .config-stage-item.active {
+      background: var(--primary-bg);
+      border-left-color: var(--primary);
+    }
+    .config-stage-item.locked { opacity: 0.5; cursor: not-allowed; }
+
+    .csi-header {
+      display: flex; align-items: center; gap: 8px;
+    }
+    .csi-num {
+      font-size: var(--type-label-size); font-weight: 700;
+      color: var(--ink-muted);
+    }
+    .config-stage-item.active .csi-num { color: var(--primary); }
+    .csi-title {
+      font-size: 13px; font-weight: 600; color: var(--ink);
+    }
+    .config-stage-item.active .csi-title { color: var(--primary); }
+    .csi-desc { font-size: 12px; color: var(--ink-muted); padding-left: 28px; line-height: 1.4; }
+
+    .sidebar-footer {
+      margin-top: auto; padding: 20px;
+      border-top: 1px solid var(--border);
+    }
+    .send-review-item {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 0;
+      color: var(--ink-subtle); font-size: 13px;
+    }
+    .send-review-item svg { flex-shrink: 0; }
+
+    /* ─── Main Content ───────────────────────────────────────────────── */
+    .main-content {
+      overflow-y: auto;
+      background: var(--bg);
+    }
+
+    /* Page header */
+    .page-header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 20px 40px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .page-header-left { display: flex; align-items: center; gap: 14px; }
+    .page-header-icon {
+      width: 36px; height: 36px;
+      background: var(--primary-bg); border-radius: var(--radius-md);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .page-header-icon svg { color: var(--primary); }
+    .page-header-title { font-size: 16px; font-weight: 600; color: var(--ink); }
+    .page-header-desc { font-size: 13px; color: var(--ink-muted); margin-top: 2px; }
+    .api-ref-btn {
+      display: flex; align-items: center; gap: 6px;
+      height: 32px; padding: 0 12px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); font-size: 12px; font-weight: 500;
+      color: var(--primary); cursor: pointer; transition: all 0.15s ease;
+      font-family: inherit;
+    }
+    .api-ref-btn:hover { background: var(--primary-bg); border-color: var(--primary-border); }
+
+    /* Content area */
+    .content-area {
+      padding: 28px 40px;
+      display: flex; flex-direction: column; gap: 12px;
+      max-width: 900px;
+    }
+
+    /* ─── Accordion Section ──────────────────────────────────────────── */
+    .accordion {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+
+    .accordion-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 24px;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.15s ease;
+    }
+    .accordion-header:hover { background: var(--bg); }
+    .accordion.open .accordion-header { border-bottom: 1px solid var(--border); }
+
+    .accordion-title-group { display: flex; align-items: center; gap: 10px; }
+    .accordion-title { font-size: 14px; font-weight: 600; color: var(--ink); }
+
+    .count-chip {
+      display: inline-flex; align-items: center;
+      padding: 2px 9px;
+      background: var(--primary-bg); border: 1px solid var(--primary-border);
+      border-radius: 100px;
+      font-size: 11px; font-weight: 600; color: var(--primary);
+    }
+    .coming-soon-chip {
+      display: inline-flex; align-items: center;
+      padding: 2px 9px;
+      background: var(--warning-bg); border: 1px solid var(--warning-border);
+      border-radius: 100px;
+      font-size: 11px; font-weight: 500; color: var(--warning);
+    }
+    .chevron {
+      width: 20px; height: 20px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--ink-muted); transition: transform 0.2s ease;
+    }
+    .accordion.open .chevron { transform: rotate(180deg); }
+
+    .accordion-body {
+      display: none;
+      padding: 24px;
+    }
+    .accordion.open .accordion-body { display: block; }
+
+    /* Instruction banner */
+    .instruction-banner {
+      background: var(--primary-bg);
+      border: 1px solid var(--primary-border);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      font-size: 13px; color: var(--primary);
+      margin-bottom: 24px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .instruction-banner svg { flex-shrink: 0; }
+
+    /* Step heading inside accordion */
+    .step-block { margin-bottom: 24px; }
+    .step-block:last-child { margin-bottom: 0; }
+    .step-header {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 6px;
+    }
+    .step-num {
+      width: 22px; height: 22px; border-radius: 50%;
+      background: var(--primary); color: white;
+      font-size: 11px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .step-title { font-size: 14px; font-weight: 600; color: var(--ink); }
+    .step-desc { font-size: 13px; color: var(--ink-muted); padding-left: 32px; margin-bottom: 16px; }
+
+    /* Option Cards (Targeted / Broadcast etc.) */
+    .option-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+      padding-left: 32px;
+    }
+    .option-card {
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      position: relative;
+    }
+    .option-card:hover { border-color: var(--border-hover); background: var(--bg); }
+    .option-card.selected {
+      border-color: var(--primary);
+      background: var(--surface);
+    }
+    .option-card.disabled-card {
+      opacity: 0.55;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+    .option-card-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    .option-card-title { font-size: 13px; font-weight: 600; color: var(--ink); }
+    .option-card-body { font-size: 12px; color: var(--ink-muted); line-height: 1.5; font-style: italic; }
+
+    /* Custom radio */
+    .radio-circle {
+      width: 18px; height: 18px; border-radius: 50%;
+      border: 2px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; transition: border-color 0.15s;
+    }
+    .option-card.selected .radio-circle { border-color: var(--primary); }
+    .radio-inner {
+      width: 9px; height: 9px; border-radius: 50%;
+      background: transparent; transition: background 0.15s;
+    }
+    .option-card.selected .radio-inner { background: var(--primary); }
+
+    /* Consequence callout — shown conditionally */
+    .consequence-callout {
+      margin-top: 12px; margin-left: 32px;
+      padding: 12px 14px;
+      background: var(--warning-bg);
+      border: 1px solid var(--warning-border);
+      border-radius: var(--radius-md);
+      font-size: 12px; color: #92400e;
+      display: flex; gap: 10px; align-items: flex-start;
+      line-height: 1.5;
+    }
+    .consequence-callout svg { flex-shrink: 0; margin-top: 1px; color: var(--warning); }
+    .consequence-callout.hidden { display: none; }
+
+    /* Deselect button */
+    .deselect-row {
+      display: flex; justify-content: flex-end;
+      padding-left: 32px; margin-bottom: 14px;
+    }
+    .deselect-btn {
+      display: flex; align-items: center; gap: 5px;
+      height: 30px; padding: 0 12px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 12px; font-weight: 500; color: var(--ink-muted);
+      cursor: pointer; transition: all 0.15s; font-family: inherit;
+    }
+    .deselect-btn:hover { border-color: var(--border-hover); color: var(--ink); }
+
+    /* Section divider between steps */
+    .step-divider {
+      height: 1px; background: var(--border);
+      margin: 24px 0;
+    }
+
+    /* ─── Toggle Row (Navigation Buttons — REMOVED from this stage) ─── */
+    /* deliberately omitted — belongs in Stage 02 Journey Builder */
+
+    /* ─── Prefilled Data Table ───────────────────────────────────────── */
+    .table-section { }
+    .table-header-row {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .table-section-title { font-size: 14px; font-weight: 600; color: var(--ink); }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .data-table thead tr {
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+    }
+    .data-table th {
+      padding: 10px 14px;
+      text-align: left;
+      font-size: var(--type-label-size); font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.05em;
+      color: var(--ink-muted);
+    }
+    .data-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      color: var(--ink);
+      vertical-align: middle;
+    }
+    .data-table tbody tr:last-child td { border-bottom: none; }
+    .data-table tbody tr:hover td { background: var(--bg); }
+
+    .mono { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--ink-muted); }
+    .yes-badge {
+      display: inline-flex;
+      padding: 2px 9px;
+      background: var(--success-bg); border: 1px solid var(--success-border);
+      border-radius: 4px;
+      font-size: 11px; font-weight: 600; color: var(--success);
+    }
+    .action-btns { display: flex; align-items: center; gap: 6px; }
+    .tbl-btn {
+      display: flex; align-items: center; gap: 5px;
+      height: 30px; padding: 0 10px;
+      border-radius: var(--radius-sm);
+      font-size: 12px; font-weight: 500; cursor: pointer;
+      font-family: inherit; transition: all 0.15s;
+    }
+    .tbl-btn-edit { background: var(--surface); border: 1px solid var(--border); color: var(--ink); }
+    .tbl-btn-edit:hover { border-color: var(--primary); color: var(--primary); }
+    .tbl-btn-del { background: var(--surface); border: 1px solid var(--border); color: var(--error); }
+    .tbl-btn-del:hover { background: var(--error-bg); border-color: var(--error-border); }
+
+    .prefilled-info-box {
+      margin-top: 14px;
+      padding: 12px 14px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      font-size: 12px; color: var(--ink-muted); line-height: 1.5;
+      display: flex; gap: 10px; align-items: flex-start;
+    }
+    .prefilled-info-box svg { flex-shrink: 0; margin-top: 1px; }
+
+    /* ─── Coming Soon: Link Expiry ───────────────────────────────────── */
+    .locked-body {
+      padding: 20px 24px;
+      display: flex; flex-direction: column; align-items: flex-start; gap: 12px;
+    }
+    .locked-desc {
+      font-size: 13px; color: var(--ink-muted); line-height: 1.5;
+    }
+    .locked-fields {
+      display: flex; align-items: flex-end; gap: 12px;
+    }
+    .locked-field-group { display: flex; flex-direction: column; gap: 5px; }
+    .locked-label {
+      font-size: var(--type-label-size); font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.05em;
+      color: var(--disabled-text);
+    }
+    .locked-input {
+      height: 36px; padding: 0 12px;
+      background: var(--bg);
+      border: 1.5px dashed var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 13px; color: var(--disabled-text);
+      width: 180px;
+      display: flex; align-items: center;
+      pointer-events: none; user-select: none;
+    }
+    .locked-select {
+      height: 36px; padding: 0 32px 0 12px;
+      background: var(--bg);
+      border: 1.5px dashed var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 13px; color: var(--disabled-text);
+      width: 140px;
+      pointer-events: none; user-select: none;
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 8px center;
+    }
+
+    /* ─── Page Footer ────────────────────────────────────────────────── */
+    .page-footer {
+      position: sticky; bottom: 0;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 14px 40px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .footer-hint { font-size: 13px; color: var(--ink-muted); }
+    .footer-hint a { color: var(--primary); cursor: pointer; text-decoration: underline; }
+    /* ─── Add Field Modal ────────────────────────────────────────────── */
+    .modal-backdrop {
+      position: fixed; inset: 0;
+      background: rgba(15, 23, 42, 0.45);
+      z-index: 500;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; visibility: hidden;
+      transition: opacity 0.2s ease, visibility 0.2s ease;
+    }
+    .modal-backdrop.open { opacity: 1; visibility: visible; }
+
+    .modal {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      width: 640px;
+      max-height: 90vh;
+      display: flex; flex-direction: column;
+      transform: translateY(8px);
+      transition: transform 0.2s ease;
+    }
+    .modal-backdrop.open .modal { transform: translateY(0); }
+
+    .modal-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .modal-title { font-size: 15px; font-weight: 600; color: var(--ink); }
+    .modal-close {
+      width: 28px; height: 28px;
+      display: flex; align-items: center; justify-content: center;
+      background: transparent; border: none;
+      color: var(--ink-muted); cursor: pointer;
+      border-radius: var(--radius-sm);
+      transition: all 0.15s;
+      font-family: inherit;
+    }
+    .modal-close:hover { background: var(--bg); color: var(--ink); }
+
+    .modal-body {
+      padding: 24px;
+      overflow-y: auto;
+      flex: 1;
+      display: flex; flex-direction: column; gap: 20px;
+    }
+
+    /* Form grid */
+    .form-row {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+    }
+    .form-row.single { grid-template-columns: 1fr; }
+    .form-row.thirds { grid-template-columns: 1fr 1fr 1fr; }
+
+    .form-field { display: flex; flex-direction: column; gap: 6px; }
+
+    .field-label {
+      font-size: var(--type-label-size); font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.05em;
+      color: var(--ink-muted);
+    }
+    .field-label .required { color: var(--error); margin-left: 2px; }
+
+    .field-input {
+      height: 36px; padding: 0 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 13px; color: var(--ink);
+      font-family: inherit;
+      transition: border-color 0.15s;
+      width: 100%;
+    }
+    .field-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-bg);
+    }
+    .field-input::placeholder { color: var(--ink-subtle); }
+
+    /* Derived / auto-generated field */
+    .field-input.derived {
+      background: var(--bg);
+      color: var(--ink-muted);
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      cursor: default;
+    }
+    .field-input.derived:focus {
+      border-color: var(--border);
+      box-shadow: none;
+    }
+    .derived-hint {
+      font-size: 11px; color: var(--ink-subtle); line-height: 1.4;
+    }
+
+    .field-select {
+      height: 36px; padding: 0 32px 0 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 13px; color: var(--ink);
+      font-family: inherit;
+      appearance: none; -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      cursor: pointer;
+      transition: border-color 0.15s;
+      width: 100%;
+    }
+    .field-select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-bg); }
+
+    /* Segment toggle: Preset / Custom */
+    .segment-row {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .segment-toggle {
+      display: flex;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 2px;
+      gap: 2px;
+    }
+    .seg-btn {
+      padding: 5px 14px;
+      font-size: 12px; font-weight: 500;
+      border: none; border-radius: 4px;
+      cursor: pointer; background: transparent;
+      color: var(--ink-muted); font-family: inherit;
+      transition: all 0.15s;
+    }
+    .seg-btn.active {
+      background: var(--surface);
+      color: var(--primary);
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* Advanced Options toggle — ghost link, no border */
+    .advanced-toggle {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: none; border: none;
+      color: var(--primary); font-size: 13px; font-weight: 500;
+      cursor: pointer; padding: 0;
+      font-family: inherit;
+      transition: opacity 0.15s;
+    }
+    .advanced-toggle:hover { opacity: 0.8; }
+    .advanced-toggle svg { transition: transform 0.2s ease; }
+    .advanced-toggle.open svg { transform: rotate(180deg); }
+
+    .advanced-panel {
+      display: none;
+      flex-direction: column; gap: 6px;
+      margin-top: 4px;
+    }
+    .advanced-panel.open { display: flex; }
+
+    .dev-note {
+      font-size: 11px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.05em;
+      color: var(--ink-subtle); margin-bottom: 4px;
+    }
+    .code-editor-mock {
+      background: #0f1117;
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      font-family: 'DM Mono', monospace;
+      font-size: 12px; line-height: 1.7;
+      color: #e2e8f0;
+    }
+    .code-ln { display: flex; gap: 16px; }
+    .code-num { color: #475569; user-select: none; min-width: 16px; text-align: right; }
+    .code-key { color: #7dd3fc; }
+    .code-str { color: #fca5a5; }
+    .code-punct { color: #c084fc; }
+    .code-brace { color: #fbbf24; }
+
+    .modal-footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: flex-end;
+      gap: 10px; flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-shell">
+
+  <!-- ── Top Header ──────────────────────────────────────────────────── -->
+  <header class="top-header">
+    <div class="header-left">
+      <div class="logo">
+        <div class="logo-mark">
+          <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        </div>
+        <span class="logo-text">OnboardIQ</span>
+      </div>
+      <div class="breadcrumb">
+        <a href="#">Home</a>
+        <span class="breadcrumb-sep">/</span>
+        <a href="#">My Flows</a>
+        <span class="breadcrumb-sep">/</span>
+        <span class="breadcrumb-current">Malaysia KYC Template</span>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="journey-title-row">
+        <span class="journey-name">Malaysia KYC Template</span>
+        <span class="edit-icon">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        </span>
+        <span class="draft-badge">DRAFT</span>
+      </div>
+      <button class="header-btn btn-secondary">Add Child</button>
+      <button class="header-btn btn-secondary">JSON</button>
+      <button class="header-btn btn-secondary">Preview</button>
+      <button class="header-btn btn-secondary" style="color:var(--primary);">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M2 12C2 12 5 5 12 5s10 7 10 7-3 7-10 7S2 12 2 12z"/></svg>
+        Edit theme
+      </button>
+      <button class="header-btn btn-dark">Save Draft</button>
+      <div class="avatar">JB</div>
+    </div>
+  </header>
+
+  <!-- ── Page Body ───────────────────────────────────────────────────── -->
+  <div class="page-body">
+
+    <!-- Left Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-progress">
+        <div class="progress-label">
+          <span>Complete all stages to publish</span>
+          <span class="progress-pct">20%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill"></div>
+        </div>
+        <div class="progress-sub">0 of 5 stages complete</div>
+      </div>
+
+      <div class="stages-label">Configuration Stages</div>
+
+      <div class="config-stage-item active">
+        <div class="csi-header">
+          <span class="csi-num">01</span>
+          <span class="csi-title">Pre Journey Configurations</span>
+        </div>
+        <p class="csi-desc">Configure journey entry flows and prefilled reviewer data before the journey begins</p>
+      </div>
+
+      <div class="config-stage-item">
+        <div class="csi-header">
+          <span class="csi-num">02</span>
+          <span class="csi-title">Journey Builder</span>
+        </div>
+        <p class="csi-desc">Build journey flow, configure steps, and customise theme and branding</p>
+      </div>
+
+      <div class="config-stage-item">
+        <div class="csi-header">
+          <span class="csi-num">03</span>
+          <span class="csi-title">Post Checks</span>
+        </div>
+        <p class="csi-desc">Configure rule-based decisioning, risk assessment, and compliance checks</p>
+      </div>
+
+      <div class="config-stage-item">
+        <div class="csi-header">
+          <span class="csi-num">04</span>
+          <span class="csi-title">Rules</span>
+        </div>
+        <p class="csi-desc">Define the trigger events and conditions that will initiate the journey</p>
+      </div>
+
+      <div class="config-stage-item">
+        <div class="csi-header">
+          <span class="csi-num">05</span>
+          <span class="csi-title">Meta Data</span>
+        </div>
+        <p class="csi-desc">Set journey metadata, environment settings, and configuration details</p>
+      </div>
+
+      <div class="sidebar-footer">
+        <div class="send-review-item">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <span>Send for review</span>
+        </div>
+        <p style="font-size:11px;color:var(--ink-subtle);padding-left:22px;">Once configured, review and submit the journey for approval.</p>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-content" id="mainScroll">
+
+      <!-- Page Header -->
+      <div class="page-header">
+        <div class="page-header-left">
+          <div class="page-header-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z"/><circle cx="12" cy="10" r="3"/></svg>
+          </div>
+          <div>
+            <div class="page-header-title">Pre Journey Configurations</div>
+            <div class="page-header-desc">Configure journey entry conditions and prefilled reviewer data before the journey begins</div>
+          </div>
+        </div>
+        <button class="api-ref-btn">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          API Reference
+        </button>
+      </div>
+
+      <div class="content-area">
+
+        <!-- ══════════════════════════════════════════════════════════
+             SECTION 1 — Journey Access Setup
+             (formerly "Trigger Configuration" — renamed for clarity)
+        ═══════════════════════════════════════════════════════════ -->
+        <div class="accordion open" id="acc-access">
+          <div class="accordion-header" onclick="toggleAccordion('acc-access')">
+            <div class="accordion-title-group">
+              <span class="accordion-title">Journey Access Setup</span>
+              <span class="count-chip" id="access-chip">1 selected</span>
+            </div>
+            <span class="chevron">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"/></svg>
+            </span>
+          </div>
+
+          <div class="accordion-body">
+            <div class="instruction-banner">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+              Select the link distribution and authentication combination that controls how users access this journey.
+            </div>
+
+            <!-- Step 1: Link Distribution -->
+            <div class="step-block">
+              <div class="step-header">
+                <div class="step-num">1</div>
+                <div class="step-title">Link Distribution</div>
+              </div>
+              <p class="step-desc">Pick how each journey link is generated and who can use it.</p>
+
+              <div class="deselect-row" id="ld-deselect-row">
+                <button class="deselect-btn" onclick="clearSelection('link-distribution')">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                  Deselect
+                </button>
+              </div>
+
+              <div class="option-grid">
+                <div class="option-card selected" id="ld-targeted" onclick="selectOption('link-distribution','targeted')">
+                  <div class="option-card-header">
+                    <span class="option-card-title">Targeted</span>
+                    <div class="radio-circle"><div class="radio-inner"></div></div>
+                  </div>
+                  <p class="option-card-body">Generates a unique link per user. Best for onboarding specific, known individuals.</p>
+                </div>
+                <div class="option-card" id="ld-broadcast" onclick="selectOption('link-distribution','broadcast')">
+                  <div class="option-card-header">
+                    <span class="option-card-title">Broadcast</span>
+                    <div class="radio-circle"><div class="radio-inner"></div></div>
+                  </div>
+                  <p class="option-card-body">Generates a single shared link for all users. Best for open or bulk onboarding flows.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="step-divider"></div>
+
+            <!-- Step 2: User Authentication -->
+            <div class="step-block">
+              <div class="step-header">
+                <div class="step-num">2</div>
+                <div class="step-title">User Authentication</div>
+              </div>
+              <p class="step-desc">Decide whether users must verify their identity before starting the journey.</p>
+
+              <div class="option-grid">
+                <div class="option-card selected" id="ua-authenticated" onclick="selectOption('user-auth','authenticated')">
+                  <div class="option-card-header">
+                    <span class="option-card-title">Authenticated</span>
+                    <div class="radio-circle"><div class="radio-inner"></div></div>
+                  </div>
+                  <p class="option-card-body">Verifies the user's identity via OTP before granting access. Users can resume an incomplete journey from where they left off.</p>
+                </div>
+                <div class="option-card" id="ua-noauth" onclick="selectOption('user-auth','noauth')">
+                  <div class="option-card-header">
+                    <span class="option-card-title">Non-Authenticated</span>
+                    <div class="radio-circle"><div class="radio-inner"></div></div>
+                  </div>
+                  <p class="option-card-body">No identity check required. Any user can access the link, but drop-offs must restart the journey from the beginning.</p>
+                </div>
+              </div>
+
+              <!-- Consequence callout — visible only when Non-Authenticated is chosen -->
+              <div class="consequence-callout hidden" id="noauth-callout">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                <span><strong>Note:</strong> Without authentication, journey progress cannot be saved. If a user drops off, they must restart from screen 1. This also means partial KYC data submitted mid-journey cannot be linked to a returning user. Confirm this is appropriate for your compliance requirements before continuing.</span>
+              </div>
+            </div>
+
+            <div class="step-divider"></div>
+
+            <!-- Step 3: OTP Delivery Channel — shown only when Authenticated is selected -->
+            <div class="step-block" id="otp-step">
+              <div class="step-header">
+                <div class="step-num">3</div>
+                <div class="step-title">OTP Delivery Channel</div>
+              </div>
+              <p class="step-desc">Choose where the one-time password is sent for authentication.</p>
+
+              <div class="option-grid">
+                <div class="option-card selected" id="otp-mobile" onclick="selectOption('otp-channel','mobile')">
+                  <div class="option-card-header">
+                    <span class="option-card-title">Mobile Number OTP</span>
+                    <div class="radio-circle"><div class="radio-inner"></div></div>
+                  </div>
+                  <p class="option-card-body">A one-time password is sent to the mobile number entered by the user. The user must verify the OTP to authenticate and proceed.</p>
+                </div>
+                <div class="option-card disabled-card" id="otp-email">
+                  <div class="option-card-header">
+                    <span class="option-card-title" style="color:var(--ink-subtle);">Email OTP</span>
+                    <span class="coming-soon-chip">Coming soon</span>
+                  </div>
+                  <p class="option-card-body">A one-time password is sent to the email ID entered by the user. The user must verify the OTP to authenticate and proceed.</p>
+                </div>
+              </div>
+            </div>
+
+          </div><!-- /accordion-body -->
+        </div><!-- /acc-access -->
+
+
+        <!-- ══════════════════════════════════════════════════════════
+             SECTION 2 — Prefilled Data
+        ═══════════════════════════════════════════════════════════ -->
+        <div class="accordion open" id="acc-prefill">
+          <div class="accordion-header" onclick="toggleAccordion('acc-prefill')">
+            <div class="accordion-title-group">
+              <span class="accordion-title">Prefilled Data</span>
+              <span class="count-chip">2 fields</span>
+            </div>
+            <span class="chevron">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"/></svg>
+            </span>
+          </div>
+
+          <div class="accordion-body">
+            <div class="instruction-banner">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+              Configure fields that will be pre-populated in the reviewer console before the journey begins.
+            </div>
+
+            <div class="table-section">
+              <div class="table-header-row">
+                <span class="table-section-title">Prefilled Fields</span>
+                <button class="header-btn btn-secondary" style="height:34px; font-size:13px;" onclick="openModal()">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  Add Field
+                </button>
+              </div>
+
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Label</th>
+                    <th>Key</th>
+                    <th>Input Type</th>
+                    <th>Mandatory Field</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Customer Email</td>
+                    <td><span class="mono">user_email</span></td>
+                    <td>Text input</td>
+                    <td><span class="yes-badge">Yes</span></td>
+                    <td>
+                      <div class="action-btns">
+                        <button class="tbl-btn tbl-btn-edit">
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                          Edit
+                        </button>
+                        <button class="tbl-btn tbl-btn-del">
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Customer Mobile Number</td>
+                    <td><span class="mono">user_phone_number</span></td>
+                    <td>Text input</td>
+                    <td><span class="yes-badge">Yes</span></td>
+                    <td>
+                      <div class="action-btns">
+                        <button class="tbl-btn tbl-btn-edit">
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                          Edit
+                        </button>
+                        <button class="tbl-btn tbl-btn-del">
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <div class="prefilled-info-box">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--ink-subtle)" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                <span>These fields are sent to OnboardIQ via your system's API at the time the journey link is generated. They pre-populate the reviewer console and are not shown to the end user. Fields must match keys registered in your API integration.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- ══════════════════════════════════════════════════════════
+             SECTION 3 — Link Expiry Period (Coming Soon — locked)
+             Non-expandable. Single consistent "Coming soon" chip.
+             No ghost inputs below the fold — no false affordance.
+        ═══════════════════════════════════════════════════════════ -->
+        <div class="accordion" id="acc-expiry" style="opacity:0.7; pointer-events:none;">
+          <div class="accordion-header" style="cursor:not-allowed;">
+            <div class="accordion-title-group">
+              <span class="accordion-title">Link Expiry Period</span>
+              <span class="coming-soon-chip">Coming soon</span>
+            </div>
+            <!-- No chevron — section is not expandable until feature ships -->
+          </div>
+          <!-- No accordion-body rendered — feature not yet available -->
+        </div>
+        <!-- DEV NOTE: When Link Expiry ships, restore accordion-body with:
+             EXPIRES AFTER (number input) + UNIT (Days/Hours dropdown)
+             and remove pointer-events:none / opacity:0.7 above          -->
+
+
+      </div><!-- /content-area -->
+
+      <!-- Page Footer -->
+      <div class="page-footer">
+        <span class="footer-hint">Nothing to configure here? <a>Skip to the next step.</a></span>
+        <button class="header-btn btn-dark" style="height:40px; padding:0 20px; font-size:14px;">
+          Save &amp; Continue
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+      </div>
+
+    </div><!-- /main-content -->
+  </div><!-- /page-body -->
+</div><!-- /app-shell -->
+
+
+<script>
+  /* ── Accordion toggle ──────────────────────────────────────────── */
+  function toggleAccordion(id) {
+    const el = document.getElementById(id);
+    el.classList.toggle('open');
+  }
+
+  /* ── Option card selection ─────────────────────────────────────── */
+  const selections = {
+    'link-distribution': 'targeted',
+    'user-auth': 'authenticated',
+    'otp-channel': 'mobile'
+  };
+
+  const groupMap = {
+    'link-distribution': ['ld-targeted','ld-broadcast'],
+    'user-auth':         ['ua-authenticated','ua-noauth'],
+    'otp-channel':       ['otp-mobile','otp-email']
+  };
+
+  const idMap = {
+    'link-distribution': { 'targeted':'ld-targeted', 'broadcast':'ld-broadcast' },
+    'user-auth':         { 'authenticated':'ua-authenticated', 'noauth':'ua-noauth' },
+    'otp-channel':       { 'mobile':'otp-mobile', 'email':'otp-email' }
+  };
+
+  function selectOption(group, value) {
+    groupMap[group].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.classList.remove('selected');
+    });
+    const target = document.getElementById(idMap[group][value]);
+    if (target && !target.classList.contains('disabled-card')) {
+      target.classList.add('selected');
+      selections[group] = value;
+    }
+    updateConditionalUI();
+    updateAccessChip();
+  }
+
+  function clearSelection(group) {
+    groupMap[group].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.classList.remove('selected');
+    });
+    selections[group] = null;
+    updateConditionalUI();
+    updateAccessChip();
+  }
+
+  function updateConditionalUI() {
+    /* OTP Channel step: only meaningful when Authenticated */
+    const otpStep = document.getElementById('otp-step');
+    if (selections['user-auth'] === 'authenticated') {
+      otpStep.style.display = 'block';
+    } else {
+      otpStep.style.display = selections['user-auth'] === 'noauth' ? 'none' : 'block';
+    }
+
+    /* Non-Auth consequence callout */
+    const callout = document.getElementById('noauth-callout');
+    if (selections['user-auth'] === 'noauth') {
+      callout.classList.remove('hidden');
+    } else {
+      callout.classList.add('hidden');
+    }
+
+    /* Step divider before OTP step */
+    const dividers = document.querySelectorAll('#acc-access .step-divider');
+    if (dividers[1]) {
+      dividers[1].style.display = selections['user-auth'] === 'noauth' ? 'none' : 'block';
+    }
+  }
+
+  function updateAccessChip() {
+    /* Count how many of the primary two groups have a selection */
+    const chip = document.getElementById('access-chip');
+    const n = [selections['link-distribution'], selections['user-auth']]
+              .filter(Boolean).length;
+    chip.textContent = n === 0 ? 'None selected' : `${n} selected`;
+    chip.style.background   = n === 0 ? 'var(--bg)' : 'var(--primary-bg)';
+    chip.style.borderColor  = n === 0 ? 'var(--border)' : 'var(--primary-border)';
+    chip.style.color        = n === 0 ? 'var(--ink-muted)' : 'var(--primary)';
+  }
+
+  /* ── Progress: stage counter ───────────────────────────────────── */
+  /* Zero out on load — user is inside Stage 01, not yet complete    */
+  document.querySelector('.progress-sub').textContent = '0 of 5 stages complete';
+
+  /* Init */
+  updateConditionalUI();
+</script>
+
+<!-- ── Add / Edit Prefilled Field Modal ───────────────────────────────── -->
+<div class="modal-backdrop" id="fieldModal">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+
+    <!-- Header -->
+    <div class="modal-header">
+      <span class="modal-title" id="modalTitle">New Prefilled Field</span>
+      <button class="modal-close" onclick="closeModal()" aria-label="Close">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <!-- Body -->
+    <div class="modal-body">
+
+      <!-- Row 1: Label + Key -->
+      <div class="form-row">
+        <div class="form-field">
+          <label class="field-label" for="fieldLabel">
+            Field label <span class="required">*</span>
+          </label>
+          <input
+            id="fieldLabel"
+            class="field-input"
+            type="text"
+            placeholder="e.g. Customer Name"
+            oninput="syncKey(this.value)"
+            autocomplete="off"
+          />
+        </div>
+        <div class="form-field">
+          <label class="field-label" for="fieldKey">Field key</label>
+          <input
+            id="fieldKey"
+            class="field-input derived"
+            type="text"
+            placeholder="auto_generated_from_label"
+            readonly
+          />
+          <span class="derived-hint">Auto-generated from label. Letters, numbers, and underscores only.</span>
+        </div>
+      </div>
+
+      <!-- Row 2: Input Type + Mandatory -->
+      <div class="form-row">
+        <div class="form-field">
+          <label class="field-label" for="inputType">Input type</label>
+          <select id="inputType" class="field-select">
+            <option>Text input</option>
+            <option>Number</option>
+            <option>Date</option>
+            <option>Dropdown</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label class="field-label" for="mandatory">Mandatory field</label>
+          <select id="mandatory" class="field-select">
+            <option value="no">No</option>
+            <option value="yes">Yes</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Row 3: Data Type + Min Length + Max Length -->
+      <div class="form-row thirds">
+        <div class="form-field">
+          <label class="field-label" for="dataType">Data type</label>
+          <select id="dataType" class="field-select">
+            <option>String</option>
+            <option>Integer</option>
+            <option>Boolean</option>
+            <option>Date</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label class="field-label" for="minLength">Min length</label>
+          <input id="minLength" class="field-input" type="number" placeholder="No minimum" min="0" />
+        </div>
+        <div class="form-field">
+          <label class="field-label" for="maxLength">Max length</label>
+          <input id="maxLength" class="field-input" type="number" placeholder="No maximum" min="0" />
+        </div>
+      </div>
+
+      <!-- Validation Pattern -->
+      <div class="form-field">
+        <div class="segment-row">
+          <label class="field-label">Validation pattern</label>
+          <div class="segment-toggle">
+            <button class="seg-btn active" id="seg-preset" onclick="switchSegment('preset')">Preset</button>
+            <button class="seg-btn" id="seg-custom" onclick="switchSegment('custom')">Custom</button>
+          </div>
+        </div>
+
+        <!-- Preset dropdown -->
+        <div id="pattern-preset">
+          <select class="field-select" style="margin-top:6px;">
+            <option value="">Select a preconfigured pattern</option>
+            <option>Email address</option>
+            <option>Mobile number (India)</option>
+            <option>PAN card</option>
+            <option>Aadhaar number</option>
+            <option>IFSC code</option>
+            <option>Pincode</option>
+          </select>
+        </div>
+
+        <!-- Custom regex input — hidden by default -->
+        <div id="pattern-custom" style="display:none; margin-top:6px;">
+          <input
+            class="field-input"
+            type="text"
+            placeholder="e.g. ^[A-Z]{3}-\\d{4}$"
+            style="font-family:'DM Mono',monospace; font-size:12px;"
+          />
+          <span class="derived-hint" style="margin-top:4px; display:block;">
+            Enter a JavaScript-compatible regular expression (max 256 characters).
+          </span>
+        </div>
+      </div>
+
+      <!-- Advanced Options — ghost toggle, no border -->
+      <div>
+        <button
+          class="advanced-toggle"
+          id="advancedToggle"
+          onclick="toggleAdvanced()"
+          type="button"
+        >
+          Advanced options
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </button>
+
+        <div class="advanced-panel" id="advancedPanel">
+          <div class="form-field" style="margin-top:12px;">
+            <!-- DEV NOTE: RC Styles / JSON editor is a developer-only escape hatch.
+                 It is intentionally nested here and not exposed at the top-level form.
+                 Label uses "RC Styles (JSON)" per existing system convention.
+                 Do not promote this field to the main body of the modal. -->
+            <label class="field-label" style="display:flex; align-items:center; gap:6px;">
+              RC styles
+              <span style="font-size:10px; font-weight:500; text-transform:none; letter-spacing:0;
+                           background:var(--bg); border:1px solid var(--border);
+                           border-radius:4px; padding:1px 6px; color:var(--ink-muted);">
+                Developer only
+              </span>
+            </label>
+            <div class="code-editor-mock">
+              <div class="code-ln"><span class="code-num">1</span><span class="code-brace">{</span></div>
+              <div class="code-ln"><span class="code-num">2</span><span style="padding-left:16px;"><span class="code-key">"desktop"</span><span class="code-punct">: {</span></span></div>
+              <div class="code-ln"><span class="code-num">3</span><span style="padding-left:32px;"><span class="code-key">"parentStyles"</span><span class="code-punct">: {</span></span></div>
+              <div class="code-ln"><span class="code-num">4</span><span style="padding-left:48px;"><span class="code-key">"display"</span><span class="code-punct">: </span><span class="code-str">"grid"</span></span></div>
+              <div class="code-ln"><span class="code-num">5</span><span style="padding-left:32px;"><span class="code-punct">}</span></span></div>
+              <div class="code-ln"><span class="code-num">6</span><span style="padding-left:16px;"><span class="code-punct">}</span></span></div>
+              <div class="code-ln"><span class="code-num">7</span><span class="code-brace">}</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /modal-body -->
+
+    <!-- Footer -->
+    <div class="modal-footer">
+      <button class="header-btn btn-secondary" onclick="closeModal()">Cancel</button>
+      <button class="header-btn btn-primary">Add Field</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  /* ── Modal open / close ───────────────────────────────────── */
+  function openModal() {
+    document.getElementById('fieldModal').classList.add('open');
+    document.getElementById('fieldLabel').focus();
+  }
+  function closeModal() {
+    document.getElementById('fieldModal').classList.remove('open');
+  }
+  /* Close on backdrop click */
+  document.getElementById('fieldModal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+
+  /* ── Auto-derive field key from label ─────────────────────── */
+  function syncKey(val) {
+    const key = val
+      .toLowerCase()
+      .trim()
+      .replace(/\s+/g, '_')
+      .replace(/[^a-z0-9_]/g, '');
+    document.getElementById('fieldKey').value = key;
+  }
+
+  /* ── Preset / Custom segment toggle ──────────────────────── */
+  function switchSegment(mode) {
+    document.getElementById('seg-preset').classList.toggle('active', mode === 'preset');
+    document.getElementById('seg-custom').classList.toggle('active', mode === 'custom');
+    document.getElementById('pattern-preset').style.display = mode === 'preset' ? 'block' : 'none';
+    document.getElementById('pattern-custom').style.display = mode === 'custom' ? 'block' : 'none';
+  }
+
+  /* ── Advanced options toggle ──────────────────────────────── */
+  function toggleAdvanced() {
+    const btn   = document.getElementById('advancedToggle');
+    const panel = document.getElementById('advancedPanel');
+    const isOpen = panel.classList.toggle('open');
+    btn.classList.toggle('open', isOpen);
+  }
+</script>
+
+</body>
+</html>
