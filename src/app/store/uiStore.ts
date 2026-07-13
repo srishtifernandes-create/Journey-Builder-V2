@@ -1,15 +1,19 @@
 import { create } from 'zustand'
 
 export interface UIState {
-  sidebarOpen: boolean
-  rightPanelOpen: boolean
-  setSidebarOpen: (open: boolean) => void
-  setRightPanelOpen: (open: boolean) => void
+  sidebarCollapsed: boolean
+  activeInspectorTab: 'config' | 'rules' | 'history'
+  theme: string
+  setSidebarCollapsed: (collapsed: boolean) => void
+  setActiveInspectorTab: (tab: 'config' | 'rules' | 'history') => void
+  setTheme: (theme: string) => void
 }
 
 export const useUIStore = create<UIState>((set) => ({
-  sidebarOpen: false,
-  rightPanelOpen: false,
-  setSidebarOpen: (open) => set({ sidebarOpen: open }),
-  setRightPanelOpen: (open) => set({ rightPanelOpen: open }),
+  sidebarCollapsed: false,
+  activeInspectorTab: 'config',
+  theme: 'light',
+  setSidebarCollapsed: (collapsed) => set({ sidebarCollapsed: collapsed }),
+  setActiveInspectorTab: (tab) => set({ activeInspectorTab: tab }),
+  setTheme: (theme) => set({ theme }),
 }))

@@ -614,3 +614,5 @@ When uncertain
 STOP
 
 and ask.
+
+No component should exceed approximately 250 lines of implementation code. If a component grows beyond that, extract child components or hooks
