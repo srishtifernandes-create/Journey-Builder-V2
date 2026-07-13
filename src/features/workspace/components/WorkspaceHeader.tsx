@@ -1,7 +1,17 @@
 import React from 'react'
+import { ZoomIn, ZoomOut, Maximize, RotateCcw } from 'lucide-react'
 import { LAYOUT } from '../../../config/layout'
+import { useCanvasRuntime } from '../../canvas/hooks/useCanvasRuntime'
+import { useCanvasStore } from '../../../app/store/canvasStore'
 
 export function WorkspaceHeader() {
+  const runtime = useCanvasRuntime()
+  const zoom = useCanvasStore((s) => s.zoom)
+  const pan = useCanvasStore((s) => s.pan)
+
+  // Format zoom to percentage
+  const zoomPercent = Math.round(zoom * 100)
+
   return (
     <header
       className="w-full bg-white border-b border-neutral-200 px-6 flex items-center justify-between z-30"
@@ -22,9 +32,46 @@ export function WorkspaceHeader() {
         </span>
       </div>
 
-      {/* Middle Area: Future Toolbar Slot */}
-      <div className="flex items-center gap-1 text-xs text-neutral-300 italic">
-        Toolbar slot (Sprint 03)
+      {/* Middle Area: Viewport Control Toolbar */}
+      <div className="flex items-center gap-2 bg-neutral-50 border border-neutral-200 rounded-lg p-1">
+        <button
+          type="button"
+          onClick={() => runtime.viewport.zoomIn()}
+          title="Zoom In"
+          className="w-7 h-7 flex items-center justify-center text-neutral-600 hover:text-neutral-950 hover:bg-neutral-200 rounded transition-colors focus:outline-none"
+        >
+          <ZoomIn className="w-4 h-4" />
+        </button>
+        <button
+          type="button"
+          onClick={() => runtime.viewport.zoomOut()}
+          title="Zoom Out"
+          className="w-7 h-7 flex items-center justify-center text-neutral-600 hover:text-neutral-950 hover:bg-neutral-200 rounded transition-colors focus:outline-none"
+        >
+          <ZoomOut className="w-4 h-4" />
+        </button>
+        <button
+          type="button"
+          onClick={() => runtime.viewport.fitView()}
+          title="Fit View"
+          className="w-7 h-7 flex items-center justify-center text-neutral-600 hover:text-neutral-950 hover:bg-neutral-200 rounded transition-colors focus:outline-none"
+        >
+          <Maximize className="w-4 h-4" />
+        </button>
+        <button
+          type="button"
+          onClick={() => runtime.viewport.resetView()}
+          title="Reset View"
+          className="w-7 h-7 flex items-center justify-center text-neutral-600 hover:text-neutral-950 hover:bg-neutral-200 rounded transition-colors focus:outline-none"
+        >
+          <RotateCcw className="w-4 h-4" />
+        </button>
+
+        <span className="h-4 w-px bg-neutral-200 mx-1"></span>
+
+        <span className="text-[10px] font-mono text-neutral-500 px-1 whitespace-nowrap">
+          {zoomPercent}% (x: {Math.round(pan.x)}, y: {Math.round(pan.y)})
+        </span>
       </div>
 
       {/* Right Area: Actions */}
