@@ -1,5 +1,7 @@
 import type { ICanvasRuntime } from './contracts/ICanvasRuntime'
 import type { ICanvasAdapter, ViewportState } from './contracts/ICanvasAdapter'
+import type { Position } from '../../nodes/contracts/INode'
+import type { NodeCreationService } from '../../nodes/services/NodeCreationService'
 import { ViewportManager } from './ViewportManager'
 import { InteractionManager } from './InteractionManager'
 import { KeyboardManager } from './KeyboardManager'
@@ -14,6 +16,8 @@ export class CanvasRuntime implements ICanvasRuntime {
   public readonly events: CanvasEvents
 
   private adapter: ICanvasAdapter | null = null
+  private nodeCreation: NodeCreationService | null = null
+  private viewportCenterProvider: (() => { x: number; y: number }) | null = null
   private disposeList: Array<() => void> = []
 
   constructor() {
@@ -59,6 +63,35 @@ export class CanvasRuntime implements ICanvasRuntime {
 
     // Bind window/container keyboard event listeners
     this.keyboard.bind(window)
+  }
+
+  public bindNodeCreation(service: NodeCreationService): void {
+    this.nodeCreation = service
+  }
+
+  public createNode(type: string, position: Position): void {
+    if (!this.nodeCreation) {
+      throw new Error('Cannot create node: NodeCreationService is not bound to the canvas runtime.')
+    }
+    const node = this.nodeCreation.createNode(type, position)
+    this.events.emit('nodeCreated', { nodeId: node.id, type: node.type })
+  }
+
+  public createNodeAtScreenPoint(type: string, screenX: number, screenY: number): void {
+    const position = this.viewport.screenToFlowPosition(screenX, screenY)
+    this.createNode(type, position)
+  }
+
+  public bindViewportCenterProvider(provider: () => { x: number; y: number }): void {
+    this.viewportCenterProvider = provider
+  }
+
+  public createNodeAtViewportCenter(type: string): void {
+    if (!this.viewportCenterProvider) {
+      throw new Error('Cannot create node: viewport center provider is not bound to the canvas runtime.')
+    }
+    const { x, y } = this.viewportCenterProvider()
+    this.createNodeAtScreenPoint(type, x, y)
   }
 
   private unbindAdapter(): void {

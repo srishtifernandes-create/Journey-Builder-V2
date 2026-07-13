@@ -6,11 +6,13 @@ export interface PortDefinition {
   label?: string
 }
 
+export type NodeCategory = string
+
 export interface NodeMetadata {
   type: string
   displayName: string
   description: string
-  category: 'flow' | 'logic' | 'integration' | 'lifecycle'
+  category: NodeCategory
   group: string
   icon: string
   keywords: string[]
@@ -34,6 +36,6 @@ export interface INodeRegistry {
   getNode(type: string): NodeRegistration | undefined
   getNodeMetadata(type: string): NodeMetadata | undefined
   getAllNodes(): NodeRegistration[]
-  getNodesByCategory(category: string): NodeRegistration[]
+  getNodesByCategory(category: NodeCategory): NodeRegistration[]
   getNodesByGroup(group: string): NodeRegistration[]
 }

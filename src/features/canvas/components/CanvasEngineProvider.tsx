@@ -2,6 +2,9 @@ import React, { createContext, ReactNode, useContext, useEffect, useMemo } from 
 import { CanvasRuntime } from '../runtime/CanvasRuntime'
 import { useSelectionStore } from '../../../app/store/selectionStore'
 import { useCanvasStore } from '../../../app/store/canvasStore'
+import { useJourneyStore } from '../../../app/store/journeyStore'
+import { NodeFactory } from '../../nodes/factory/NodeFactory'
+import { NodeCreationService } from '../../nodes/services/NodeCreationService'
 
 export interface CanvasEngineContextType {
   runtime: CanvasRuntime
@@ -17,6 +20,17 @@ export function CanvasEngineProvider({ children }: { children: ReactNode }) {
   const setPan = useCanvasStore((s) => s.setPan)
 
   useEffect(() => {
+    // 0. Bind the node creation service, injecting store-backed dependencies
+    const nodeCreation = new NodeCreationService({
+      instantiate: (type, position) => NodeFactory.createNode(type, position),
+      addNode: (node) => useJourneyStore.getState().addNode(node),
+      selectNode: (nodeId) => {
+        useJourneyStore.getState().selectNode(nodeId)
+        useSelectionStore.getState().setSelectedNodeId(nodeId)
+      },
+    })
+    runtime.bindNodeCreation(nodeCreation)
+
     // 1. Subscribe to canvas selection changes via the Event Pipeline
     const unsubscribeSelection = runtime.events.on('selectionChange', (selection) => {
       const selectedNode = selection.nodes[0] || null

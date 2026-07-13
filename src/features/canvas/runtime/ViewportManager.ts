@@ -1,5 +1,5 @@
 import type { IViewportManager } from './contracts/IViewportManager'
-import type { ViewportState, ICanvasAdapter } from './contracts/ICanvasAdapter'
+import type { ViewportState, ICanvasAdapter, FlowPosition } from './contracts/ICanvasAdapter'
 
 export class ViewportManager implements IViewportManager {
   private adapter: ICanvasAdapter | null = null
@@ -29,5 +29,10 @@ export class ViewportManager implements IViewportManager {
 
   public resetView(): void {
     this.adapter?.resetView()
+  }
+
+  public screenToFlowPosition(screenX: number, screenY: number): FlowPosition {
+    if (!this.adapter) return { x: screenX, y: screenY }
+    return this.adapter.screenToFlowPosition(screenX, screenY)
   }
 }

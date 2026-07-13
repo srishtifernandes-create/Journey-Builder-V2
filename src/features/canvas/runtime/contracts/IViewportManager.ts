@@ -1,4 +1,4 @@
-import type { ViewportState } from './ICanvasAdapter'
+import type { ViewportState, FlowPosition } from './ICanvasAdapter'
 
 export interface IViewportManager {
   readonly viewport: ViewportState
@@ -6,4 +6,5 @@ export interface IViewportManager {
   zoomOut(): void
   fitView(): void
   resetView(): void
+  screenToFlowPosition(screenX: number, screenY: number): FlowPosition
 }

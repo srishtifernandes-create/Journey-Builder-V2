@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useCallback } from 'react'
+import React, { useEffect, useMemo, useCallback, useRef } from 'react'
 import { ReactFlow, Background, useReactFlow, ReactFlowProvider, applyNodeChanges, type NodeChange } from '@xyflow/react'
 import { ReactFlowAdapter } from '../runtime/adapters/ReactFlowAdapter'
 import { useCanvasRuntime } from '../hooks/useCanvasRuntime'
@@ -11,6 +11,7 @@ function CanvasViewportInner() {
   const runtime = useCanvasRuntime()
   const nodes = useJourneyStore((s) => s.nodes)
   const setNodes = useJourneyStore((s) => s.setNodes)
+  const containerRef = useRef<HTMLDivElement>(null)
 
   const adapter = useMemo(() => new ReactFlowAdapter(), [])
 
@@ -67,6 +68,11 @@ function CanvasViewportInner() {
     // Lifecycle: Mount Adapter -> bind reactFlowInstance -> Register Managers
     adapter.setInstance(reactFlow)
     runtime.bindAdapter(adapter)
+    runtime.bindViewportCenterProvider(() => {
+      const rect = containerRef.current?.getBoundingClientRect()
+      if (!rect) return { x: 0, y: 0 }
+      return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 }
+    })
 
     return () => {
       // Lifecycle: Unmount Detach
@@ -74,8 +80,31 @@ function CanvasViewportInner() {
     }
   }, [reactFlow, runtime, adapter])
 
+  const handleDragOver = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+    if (e.dataTransfer.types.includes('application/x-jb-node-type')) {
+      e.preventDefault()
+      e.dataTransfer.dropEffect = 'copy'
+    }
+  }, [])
+
+  const handleDrop = useCallback(
+    (e: React.DragEvent<HTMLDivElement>) => {
+      const nodeType = e.dataTransfer.getData('application/x-jb-node-type')
+      if (!nodeType) return
+      e.preventDefault()
+      runtime.createNodeAtScreenPoint(nodeType, e.clientX, e.clientY)
+    },
+    [runtime]
+  )
+
   return (
-    <div className="w-full h-full relative" style={{ outline: 'none' }}>
+    <div
+      ref={containerRef}
+      className="w-full h-full relative"
+      style={{ outline: 'none' }}
+      onDragOver={handleDragOver}
+      onDrop={handleDrop}
+    >
       <ReactFlow
         nodes={rfNodes}
         edges={[]}

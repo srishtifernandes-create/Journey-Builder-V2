@@ -9,6 +9,11 @@ export interface SelectionState {
   readonly edges: string[]
 }
 
+export interface FlowPosition {
+  readonly x: number
+  readonly y: number
+}
+
 export interface ICanvasAdapter {
   zoomIn(): void
   zoomOut(): void
@@ -16,7 +21,8 @@ export interface ICanvasAdapter {
   resetView(): void
   getViewport(): ViewportState
   setViewport(x: number, y: number, zoom: number): void
-  
+  screenToFlowPosition(screenX: number, screenY: number): FlowPosition
+
   onViewportChange(callback: (viewport: ViewportState) => void): () => void
   onPaneClick(callback: (event: MouseEvent) => void): () => void
   onPaneDoubleClick(callback: (event: MouseEvent) => void): () => void

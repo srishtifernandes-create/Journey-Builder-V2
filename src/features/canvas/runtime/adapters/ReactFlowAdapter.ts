@@ -1,4 +1,4 @@
-import type { ICanvasAdapter, ViewportState, SelectionState } from '../contracts/ICanvasAdapter'
+import type { ICanvasAdapter, ViewportState, SelectionState, FlowPosition } from '../contracts/ICanvasAdapter'
 
 // Minimal typing wrapper for `@xyflow/react` instance to keep the adapter type-safe
 export interface RFInstance {
@@ -7,6 +7,7 @@ export interface RFInstance {
   fitView(options?: { duration?: number; padding?: number }): void
   getViewport(): { x: number; y: number; zoom: number }
   setViewport(viewport: { x: number; y: number; zoom: number }, options?: { duration?: number }): void
+  screenToFlowPosition(position: { x: number; y: number }): { x: number; y: number }
 }
 
 export class ReactFlowAdapter implements ICanvasAdapter {
@@ -45,6 +46,11 @@ export class ReactFlowAdapter implements ICanvasAdapter {
 
   public setViewport(x: number, y: number, zoom: number): void {
     this.rf?.setViewport({ x, y, zoom }, { duration: 200 })
+  }
+
+  public screenToFlowPosition(screenX: number, screenY: number): FlowPosition {
+    if (!this.rf) return { x: screenX, y: screenY }
+    return this.rf.screenToFlowPosition({ x: screenX, y: screenY })
   }
 
   // Propagation Trigger Hooks called by CanvasViewport element callbacks

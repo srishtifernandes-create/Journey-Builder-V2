@@ -4,6 +4,7 @@ import { WorkspaceHeader } from './WorkspaceHeader'
 import { WorkspaceNavigation } from './WorkspaceNavigation'
 import { WorkspaceCanvas } from './WorkspaceCanvas'
 import { WorkspaceProperties } from './WorkspaceProperties'
+import { NodePalette } from '../../palette/components/NodePalette'
 import { LAYOUT } from '../../../config/layout'
 
 export function Workspace() {
@@ -20,6 +21,11 @@ export function Workspace() {
       <div className="flex flex-1 w-full overflow-hidden">
         {/* Left Side Fixed Navigation */}
         <WorkspaceNavigation />
+
+        {/* Node Palette */}
+        <div style={{ width: LAYOUT.palette.width }} className="h-full flex-shrink-0">
+          <NodePalette />
+        </div>
 
         {/* Center/Right Resizable Content Area */}
         <main className="flex-1 h-full overflow-hidden">

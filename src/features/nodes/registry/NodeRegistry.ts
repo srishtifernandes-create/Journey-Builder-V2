@@ -1,4 +1,4 @@
-import type { INodeRegistry, NodeRegistration, NodeMetadata } from '../contracts/INodeRegistry'
+import type { INodeRegistry, NodeRegistration, NodeMetadata, NodeCategory } from '../contracts/INodeRegistry'
 
 class NodeRegistryImpl implements INodeRegistry {
   private registrations = new Map<string, NodeRegistration>()
@@ -26,7 +26,7 @@ class NodeRegistryImpl implements INodeRegistry {
     return Array.from(this.registrations.values())
   }
 
-  public getNodesByCategory(category: 'flow' | 'logic' | 'integration' | 'lifecycle'): NodeRegistration[] {
+  public getNodesByCategory(category: NodeCategory): NodeRegistration[] {
     return this.getAllNodes().filter((n) => n.metadata.category === category)
   }
 

@@ -8,6 +8,9 @@ export const LAYOUT = {
   sidebar: {
     width: '64px', // 4.0rem (collapsed)
   },
+  palette: {
+    width: '240px', // 15rem
+  },
   inspector: {
     defaultWidth: '340px', // 21.25rem
     minWidthPercent: 20,

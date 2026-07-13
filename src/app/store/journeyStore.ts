@@ -21,6 +21,8 @@ export interface JourneyState {
   edges: Edge[]
   metadata: JourneyMetadata | null
   setNodes: (nodes: INode[]) => void
+  addNode: (node: INode) => void
+  selectNode: (nodeId: string) => void
   setEdges: (edges: Edge[]) => void
   setMetadata: (metadata: JourneyMetadata) => void
 }
@@ -30,6 +32,14 @@ export const useJourneyStore = create<JourneyState>((set) => ({
   edges: [],
   metadata: null,
   setNodes: (nodes) => set({ nodes }),
+  addNode: (node) => set((s) => ({ nodes: [...s.nodes, node] })),
+  selectNode: (nodeId) =>
+    set((s) => ({
+      nodes: s.nodes.map((n) => ({
+        ...n,
+        uiState: { ...n.uiState, status: n.id === nodeId ? 'selected' : 'default' },
+      })),
+    })),
   setEdges: (edges) => set({ edges }),
   setMetadata: (metadata) => set({ metadata }),
 }))

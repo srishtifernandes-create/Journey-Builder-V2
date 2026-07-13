@@ -7,6 +7,7 @@ type EventCallbackMap = {
   viewportChange: (viewport: ViewportState) => void
   selectionChange: (selection: SelectionState) => void
   keydown: (trigger: string) => void
+  nodeCreated: (payload: { nodeId: string; type: string }) => void
 }
 
 export class CanvasEvents {
@@ -14,7 +15,7 @@ export class CanvasEvents {
 
   public on<K extends keyof EventCallbackMap>(event: K, callback: EventCallbackMap[K]): () => void {
     if (!this.listeners[event]) {
-      this.listeners[event] = new Set()
+      this.listeners[event] = new Set() as any
     }
     this.listeners[event]!.add(callback)
 
