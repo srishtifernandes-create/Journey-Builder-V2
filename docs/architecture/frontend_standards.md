@@ -625,6 +625,22 @@ Every manager/provider must expose a dispose() lifecycle method.
 
 Layout constants belong in config/layout.ts.
 
+### Selection Architecture
+
+Selection is interaction state.
+
+Document state and interaction state must never exist in the same store.
+
+JourneyStore owns graph data.
+
+SelectionStore owns canvas selection.
+
+React Flow is an interaction source only.
+
+Canvas Runtime is responsible for translating interaction events into application state.
+
+Presentation components must never synchronize selection between stores.
+
 ### Business Logic Separation
 
 Business logic must never live inside React components.
@@ -652,3 +668,4 @@ are considered stable architecture.
 Future sprints must extend these systems.
 
 They must not restructure them unless an Architecture Decision Record explicitly approves the change.
+

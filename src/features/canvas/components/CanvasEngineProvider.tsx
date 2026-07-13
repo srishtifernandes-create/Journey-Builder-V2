@@ -8,34 +8,38 @@ import { NodeCreationService } from '../../nodes/services/NodeCreationService'
 
 export interface CanvasEngineContextType {
   runtime: CanvasRuntime
+  selectedNodeId: string | null
 }
 
 const CanvasEngineContext = createContext<CanvasEngineContextType | null>(null)
 
 export function CanvasEngineProvider({ children }: { children: ReactNode }) {
   const runtime = useMemo(() => new CanvasRuntime(), [])
-  const setSelectedNodeId = useSelectionStore((s) => s.setSelectedNodeId)
+  const selectedNodeId = useSelectionStore((s) => s.selectedNodeId)
+  const selectNode = useSelectionStore((s) => s.selectNode)
   const setSelectedEdgeId = useSelectionStore((s) => s.setSelectedEdgeId)
   const setZoom = useCanvasStore((s) => s.setZoom)
   const setPan = useCanvasStore((s) => s.setPan)
 
   useEffect(() => {
-    // 0. Bind the node creation service, injecting store-backed dependencies
+    // 0. Bind the node creation service. NodeCreationService never touches a
+    // store directly — its selectNode dep routes through CanvasRuntime's
+    // SelectionManager, which only emits intent (see step 1 below for the
+    // single place that intent becomes a selectionStore write).
     const nodeCreation = new NodeCreationService({
       instantiate: (type, position) => NodeFactory.createNode(type, position),
       addNode: (node) => useJourneyStore.getState().addNode(node),
-      selectNode: (nodeId) => {
-        useJourneyStore.getState().selectNode(nodeId)
-        useSelectionStore.getState().setSelectedNodeId(nodeId)
-      },
+      selectNode: (nodeId) => runtime.selection.selectNode(nodeId),
     })
     runtime.bindNodeCreation(nodeCreation)
 
-    // 1. Subscribe to canvas selection changes via the Event Pipeline
+    // 1. Subscribe to canvas selection intent via the Event Pipeline.
+    // This is the ONLY place in the codebase permitted to write to
+    // selectionStore. SelectionManager (the emitter) never imports Zustand.
     const unsubscribeSelection = runtime.events.on('selectionChange', (selection) => {
       const selectedNode = selection.nodes[0] || null
       const selectedEdge = selection.edges[0] || null
-      setSelectedNodeId(selectedNode)
+      selectNode(selectedNode)
       setSelectedEdgeId(selectedEdge)
     })
 
@@ -51,10 +55,10 @@ export function CanvasEngineProvider({ children }: { children: ReactNode }) {
       unsubscribeViewport()
       runtime.dispose()
     }
-  }, [runtime, setSelectedNodeId, setSelectedEdgeId, setZoom, setPan])
+  }, [runtime, selectNode, setSelectedEdgeId, setZoom, setPan])
 
   return (
-    <CanvasEngineContext.Provider value={{ runtime }}>
+    <CanvasEngineContext.Provider value={{ runtime, selectedNodeId }}>
       {children}
     </CanvasEngineContext.Provider>
   )

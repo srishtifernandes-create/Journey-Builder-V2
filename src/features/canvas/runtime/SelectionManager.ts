@@ -25,6 +25,15 @@ export class SelectionManager implements ISelectionManager {
     return this.selection
   }
 
+  // Programmatic selection (e.g. a newly created node). Emits the same
+  // 'selectionChange' event a canvas gesture would produce — CanvasEngineProvider
+  // is the only listener permitted to turn this into a store write. SelectionManager
+  // never imports or calls into a Zustand store itself.
+  public selectNode(nodeId: string | null): void {
+    this.selection = nodeId ? { nodes: [nodeId], edges: [] } : { nodes: [], edges: [] }
+    this.events.emit('selectionChange', this.selection)
+  }
+
   public clearSelection(): void {
     this.selection = { nodes: [], edges: [] }
     this.events.emit('selectionChange', this.selection)

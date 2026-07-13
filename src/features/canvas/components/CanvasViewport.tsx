@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useCallback, useRef } from 'react'
 import { ReactFlow, Background, useReactFlow, ReactFlowProvider, applyNodeChanges, type NodeChange } from '@xyflow/react'
 import { ReactFlowAdapter } from '../runtime/adapters/ReactFlowAdapter'
-import { useCanvasRuntime } from '../hooks/useCanvasRuntime'
+import { useCanvasEngine } from './CanvasEngineProvider'
 import { useJourneyStore } from '../../../app/store/journeyStore'
 import { RendererRegistry } from '../../nodes/registry/RendererRegistry'
 import '@xyflow/react/dist/style.css'
@@ -10,7 +10,9 @@ const FALLBACK_NODE_TYPE = '__fallback__'
 
 function CanvasViewportInner() {
   const reactFlow = useReactFlow()
-  const runtime = useCanvasRuntime()
+  // Selection is read through the runtime/context layer (Decision 014) —
+  // never from journeyStore, never from selectionStore directly.
+  const { runtime, selectedNodeId } = useCanvasEngine()
   const nodes = useJourneyStore((s) => s.nodes)
   const setNodes = useJourneyStore((s) => s.setNodes)
   const containerRef = useRef<HTMLDivElement>(null)
@@ -28,29 +30,33 @@ function CanvasViewportInner() {
     return types
   }, [])
 
-  // Map canvas nodes to React Flow node schema with selection status mapping.
-  // Unregistered types are remapped to the fallback key so React Flow never
-  // throws on an unknown node.type.
+  // Map canvas nodes to React Flow node schema. Selection comes from
+  // selectedNodeId (sourced from context, ultimately selectionStore) per
+  // Decision 014 — never from journeyStore's uiState. Unregistered types are
+  // remapped to the fallback key so React Flow never throws on an unknown
+  // node.type.
   const rfNodes = useMemo(() => {
     return nodes.map((node) => ({
       id: node.id,
       type: RendererRegistry.hasRenderer(node.type) ? node.type : FALLBACK_NODE_TYPE,
       position: node.position,
       data: { node },
-      selected: node.uiState.status === 'selected',
+      selected: node.id === selectedNodeId,
     }))
-  }, [nodes])
+  }, [nodes, selectedNodeId])
 
-  // Synchronize React Flow movements & selections back into journeyStore
+  // Synchronize React Flow position/drag changes back into journeyStore.
+  // Selection is intentionally NOT written back here — React Flow's own
+  // onSelectionChange (below) is the sole path for selection intent.
   const onNodesChange = useCallback((changes: NodeChange[]) => {
     const currentNodes = useJourneyStore.getState().nodes
-    
+
     const rfNodesFormatted = currentNodes.map((n) => ({
       id: n.id,
       type: n.type,
       position: n.position,
       data: { node: n },
-      selected: n.uiState.status === 'selected',
+      selected: n.id === selectedNodeId,
     }))
 
     const updatedRfNodes = applyNodeChanges(changes, rfNodesFormatted)
@@ -60,15 +66,11 @@ function CanvasViewportInner() {
       return {
         ...originalNode,
         position: rfNode.position,
-        uiState: {
-          ...originalNode.uiState,
-          status: rfNode.selected ? 'selected' : 'default',
-        },
       }
     })
 
     setNodes(updatedNodes)
-  }, [setNodes])
+  }, [setNodes, selectedNodeId])
 
   useEffect(() => {
     // Lifecycle: Mount Adapter -> bind reactFlowInstance -> Register Managers

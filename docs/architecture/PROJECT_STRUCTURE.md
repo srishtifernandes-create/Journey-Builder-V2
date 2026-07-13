@@ -192,3 +192,68 @@ The following systems are considered stable architecture:
 Future sprints must extend these systems rather than restructure them.
 
 Architecture changes require a documented Architecture Decision Record (ADR) before implementation.
+
+## Selection Ownership
+
+### JourneyStore
+
+Owns:
+
+- nodes
+- edges
+- graph structure
+- node configuration
+- document data
+
+Does NOT own:
+
+- canvas selection
+- hover state
+- transient interaction state
+
+---
+
+### SelectionStore
+
+Owns:
+
+- selected node ids
+- selected edge ids
+- future multi-selection state
+
+Does NOT own:
+
+- graph structure
+- node configuration
+- renderer metadata
+
+---
+
+### Canvas Runtime
+
+Owns:
+
+- interaction orchestration
+- event translation
+- runtime communication
+
+Does NOT own:
+
+- business data
+- document persistence
+
+---
+
+### React Flow
+
+Owns:
+
+- rendering
+- gesture detection
+- viewport interaction
+
+Does NOT own:
+
+- application state
+- selection state
+- business logic

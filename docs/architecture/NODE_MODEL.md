@@ -43,6 +43,8 @@ interface NodeUIState {
 }
 ```
 
+> **Deprecated value:** `'selected'` is no longer written by any code path (see Decision 014 in `DECISION_LOG.md` — `selectionStore` is now the sole owner of selection state). The value remains in the type for migration safety and will be removed in a future sprint once all consumers have confirmed no dependency on it. Do not add new writers of `status: 'selected'`; use `selectionStore` instead.
+
 ### PortState
 
 ```ts
