@@ -8,6 +8,16 @@ import '@xyflow/react/dist/style.css'
 
 const FALLBACK_NODE_TYPE = '__fallback__'
 
+// Business-owned NodeChange types: changes that represent something a Journey
+// author did (moved a node, deleted a node). Everything else React Flow
+// reports (e.g. `dimensions`) is renderer-owned state and must never be
+// persisted to journeyStore — see BUGFIX_001_SELECTION_FIREHOSE_FIX.md.
+const BUSINESS_OWNED_CHANGE_TYPES = new Set<NodeChange['type']>(['position', 'remove'])
+
+function isBusinessOwnedChange(change: NodeChange): boolean {
+  return BUSINESS_OWNED_CHANGE_TYPES.has(change.type)
+}
+
 function CanvasViewportInner() {
   const reactFlow = useReactFlow()
   // Selection is read through the runtime/context layer (Decision 014) —
@@ -46,9 +56,17 @@ function CanvasViewportInner() {
   }, [nodes, selectedNodeId])
 
   // Synchronize React Flow position/drag changes back into journeyStore.
-  // Selection is intentionally NOT written back here — React Flow's own
-  // onSelectionChange (below) is the sole path for selection intent.
+  // Only business-owned changes (position, remove) are persisted — renderer-owned
+  // changes (e.g. `dimensions`) are excluded so journeyStore never mutates in
+  // response to React Flow's own layout measurement. See
+  // BUGFIX_001_SELECTION_FIREHOSE_FIX.md. Selection is intentionally NOT
+  // written back here — React Flow's own onSelectionChange (below) is the
+  // sole path for selection intent.
   const onNodesChange = useCallback((changes: NodeChange[]) => {
+    if (!changes.some(isBusinessOwnedChange)) {
+      return
+    }
+
     const currentNodes = useJourneyStore.getState().nodes
 
     const rfNodesFormatted = currentNodes.map((n) => ({

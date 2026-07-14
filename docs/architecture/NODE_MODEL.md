@@ -82,6 +82,12 @@ interface NodeCapabilities {
 | `ports` | `PortFactory` | Built from `NodeRegistration.initialPorts` at creation time. |
 | `capabilities` | `NodeRegistry` (via `NodeRegistration.capabilities`) | Copied verbatim onto every instance of a type. |
 
+## Node State Ownership: Business vs. Renderer
+
+`journeyStore` holds business-owned node state only: creation and deletion, authored `position`, `config`, `ports`, and registry-derived metadata — everything that would round-trip through `NodeSerializer` or be visible to a Journey author as configured/authored.
+
+React Flow owns renderer state: measured dimensions, in-progress dragging/resizing, hover/focus, and any other transient fact that exists only to make the canvas draw correctly right now. Renderer state is never written to `journeyStore`. `CanvasViewport`'s `onNodesChange` handler enforces this by classifying incoming `NodeChange`s against an explicit allow-list of business-owned types (`position`, `remove`) before persisting — see `docs/bugs/BUGFIX_001_SELECTION_FIREHOSE_FIX.md` for the incident that established this boundary.
+
 ## Relationship to Metadata
 
 `INode` holds only runtime/instance state. Static, type-level information (display name, description, category, icon, keywords, tags, documentation) lives in `NodeMetadata` (`src/features/nodes/contracts/INodeRegistry.ts`) and is looked up through the registry by `type` — it is never duplicated onto `INode` instances.
