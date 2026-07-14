@@ -33,7 +33,7 @@ export function BaseNodeRenderer({ node, metadata, definition, selected, childre
       )}
       style={{ width: '100%', height: '100%' }}
     >
-      <div className={`absolute top-0 left-0 right-0 h-1 rounded-t-xl ${metadata.category === 'Identity' ? 'bg-blue-500' : metadata.category === 'Routing' ? 'bg-slate-500' : 'bg-neutral-300'}`} />
+      <div className={`absolute top-0 left-0 right-0 h-1 rounded-t-xl ${metadata.category === 'Screens' ? 'bg-blue-500' : metadata.category === 'Backend' ? 'bg-purple-500' : metadata.category === 'Flow' ? 'bg-amber-500' : 'bg-slate-500'}`} />
       <NodePorts ports={node.ports} supportsPorts={definition.supportsPorts} />
 
       {/* Node Header Row */}

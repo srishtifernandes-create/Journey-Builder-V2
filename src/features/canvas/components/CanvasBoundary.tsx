@@ -41,26 +41,49 @@ export function CanvasBoundary({ children, state = 'empty' }: CanvasBoundaryProp
       {/* FTUE Stage 1: true-empty — no nodes placed yet */}
       {stage === 'true-empty' && (
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
-          <div className="pointer-events-auto w-full max-w-sm p-6 bg-white border border-neutral-200 rounded-xl text-center">
-            <div className="w-16 h-12 mx-auto mb-4 opacity-50" aria-hidden="true">
-              <svg viewBox="0 0 64 48" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-                <rect x="2" y="4" width="20" height="14" rx="3" stroke="#9CA3AF" strokeWidth="1.5" strokeDasharray="3 2" />
-                <rect x="42" y="4" width="20" height="14" rx="3" stroke="#9CA3AF" strokeWidth="1.5" strokeDasharray="3 2" />
-                <rect x="22" y="30" width="20" height="14" rx="3" stroke="#9CA3AF" strokeWidth="1.5" strokeDasharray="3 2" />
-                <path d="M12 18 L27 30" stroke="#9CA3AF" strokeWidth="1.5" strokeDasharray="3 2" />
-                <path d="M52 18 L37 30" stroke="#9CA3AF" strokeWidth="1.5" strokeDasharray="3 2" />
-              </svg>
-            </div>
-            <h2 className="text-base font-semibold text-neutral-900 mb-1">Start your journey</h2>
-            <p className="text-sm text-neutral-500 mb-4">
-              Every journey begins with a Welcome Screen — the first step your applicant sees.
+          <div className="pointer-events-auto w-full max-w-lg p-8 bg-white border border-neutral-200 rounded-xl shadow-lg">
+            <h2 className="text-xl font-semibold text-neutral-900 mb-2">Welcome to Journey Builder</h2>
+            <p className="text-sm text-neutral-500 mb-6">
+              Get started by exploring the four primary workspaces:
             </p>
+            
+            <div className="grid grid-cols-2 gap-4 mb-8">
+              <div className="flex gap-3">
+                <div className="w-8 h-8 rounded bg-neutral-100 flex items-center justify-center text-neutral-600 font-bold">1</div>
+                <div>
+                  <h3 className="text-sm font-medium text-neutral-900">Node Library</h3>
+                  <p className="text-xs text-neutral-500">Drag banking capabilities from the left panel.</p>
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <div className="w-8 h-8 rounded bg-neutral-100 flex items-center justify-center text-neutral-600 font-bold">2</div>
+                <div>
+                  <h3 className="text-sm font-medium text-neutral-900">Canvas</h3>
+                  <p className="text-xs text-neutral-500">Drop nodes here to design your journey flow.</p>
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <div className="w-8 h-8 rounded bg-neutral-100 flex items-center justify-center text-neutral-600 font-bold">3</div>
+                <div>
+                  <h3 className="text-sm font-medium text-neutral-900">Properties</h3>
+                  <p className="text-xs text-neutral-500">Select a node to configure it in the right panel.</p>
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <div className="w-8 h-8 rounded bg-neutral-100 flex items-center justify-center text-neutral-600 font-bold">4</div>
+                <div>
+                  <h3 className="text-sm font-medium text-neutral-900">Screen Flow</h3>
+                  <p className="text-xs text-neutral-500">Use the top-left navigation to switch views.</p>
+                </div>
+              </div>
+            </div>
+
             <button
               type="button"
-              onClick={() => runtime.createNodeAtViewportCenter('screen')}
-              className="w-full h-9 px-4 rounded-lg bg-primary-500 text-white font-medium text-sm hover:bg-primary-600 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
+              onClick={() => runtime.createNodeAtViewportCenter('aadhaar')}
+              className="w-full h-10 px-4 rounded-lg bg-neutral-900 text-white font-medium text-sm hover:bg-neutral-800 transition-colors focus:outline-none"
             >
-              + Add Welcome Screen
+              Get Started
             </button>
           </div>
         </div>

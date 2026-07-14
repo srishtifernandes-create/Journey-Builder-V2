@@ -2,79 +2,72 @@ import { NodeRegistry } from './NodeRegistry'
 import { RendererRegistry } from './RendererRegistry'
 import { ScreenNodeRenderer } from '../renderers/ScreenNodeRenderer'
 import { TerminalNodeRenderer } from '../renderers/TerminalNodeRenderer'
+import { FlowNodeRenderer } from '../renderers/FlowNodeRenderer'
+import { BackendNodeRenderer } from '../renderers/BackendNodeRenderer'
 
 export function bootstrapNodeFoundation() {
   console.log('Bootstrapping Node Foundation...')
 
-  // 1. Register Screen Node Metadata & Capabilities
-  NodeRegistry.registerNode({
-    type: 'screen',
-    metadata: {
-      type: 'screen',
-      displayName: 'Screen',
-      description: 'A single UI step visible to applicants.',
-      category: 'Identity',
-      group: 'forms',
-      icon: 'Monitor',
-      keywords: ['form', 'screen', 'input', 'ui'],
-      tags: ['core', 'ui'],
-      schemaVersion: 1,
-    },
-    capabilities: {
-      canHaveFields: true,
-      canRoute: false,
-      isIntegration: false,
-      isTerminal: false,
-    },
-    defaultConfig: {
-      title: 'Form Screen',
-      mobileTitle: 'Form',
-      pageId: 'form_screen',
-      triggerVisibility: {
-        assisted: true,
-        cta_clicked: true,
-        qr_scanned: true,
+  // SCREENS
+  const screens = [
+    { type: 'otp', title: 'OTP Verification', desc: 'One-time password input screen', icon: 'Key' },
+    { type: 'pan', title: 'PAN Collection', desc: 'Collect and verify PAN details', icon: 'CreditCard' },
+    { type: 'aadhaar', title: 'Aadhaar eKYC', desc: 'Aadhaar biometric or OTP verification', icon: 'Fingerprint' },
+    { type: 'ocr', title: 'Document OCR', desc: 'Scan and extract data from documents', icon: 'Scan' },
+    { type: 'facematch', title: 'Face Match', desc: 'Liveness check and face matching', icon: 'UserCircle' },
+  ]
+
+  screens.forEach(s => {
+    NodeRegistry.registerNode({
+      type: s.type,
+      metadata: {
+        type: s.type,
+        displayName: s.title,
+        description: s.desc,
+        category: 'Screens',
+        group: 'forms',
+        icon: s.icon,
+        keywords: [s.type, 'screen'],
+        tags: ['core', 'ui'],
+        schemaVersion: 1,
       },
-      fields: [],
-    },
-    initialPorts: [
-      { id: 'in', type: 'input' },
-      { id: 'out', type: 'output' },
-    ],
+      capabilities: { canHaveFields: true, canRoute: false, isIntegration: false, isTerminal: false },
+      defaultConfig: { title: s.title },
+      initialPorts: [{ id: 'in', type: 'input' }, { id: 'out', type: 'output' }],
+    })
+    RendererRegistry.registerRenderer({
+      type: s.type,
+      component: ScreenNodeRenderer,
+      defaultWidth: 180,
+      defaultHeight: 72,
+      minWidth: 140,
+      minHeight: 64,
+      supportsPorts: ['top', 'bottom'],
+      resizePolicy: 'fixed',
+    })
   })
 
-  // 2. Register Terminal Node Metadata & Capabilities
+  // BACKEND
   NodeRegistry.registerNode({
-    type: 'terminal',
+    type: 'ckyc',
     metadata: {
-      type: 'terminal',
-      displayName: 'Terminal',
-      description: 'End point of a journey.',
-      category: 'Routing',
-      group: 'routing',
-      icon: 'Flag',
-      keywords: ['end', 'complete', 'terminal', 'exit'],
-      tags: ['core', 'routing'],
+      type: 'ckyc',
+      displayName: 'CKYC Fetch',
+      description: 'Fetch Central KYC records',
+      category: 'Backend',
+      group: 'integration',
+      icon: 'Database',
+      keywords: ['ckyc', 'fetch', 'kyc'],
+      tags: ['integration'],
       schemaVersion: 1,
     },
-    capabilities: {
-      canHaveFields: false,
-      canRoute: false,
-      isIntegration: false,
-      isTerminal: true,
-    },
-    defaultConfig: {
-      title: 'Journey Complete',
-    },
-    initialPorts: [
-      { id: 'in', type: 'input' },
-    ],
+    capabilities: { canHaveFields: false, canRoute: false, isIntegration: true, isTerminal: false },
+    defaultConfig: { title: 'CKYC Fetch' },
+    initialPorts: [{ id: 'in', type: 'input' }, { id: 'out', type: 'output' }],
   })
-
-  // 3. Register Screen Node Renderer
   RendererRegistry.registerRenderer({
-    type: 'screen',
-    component: ScreenNodeRenderer,
+    type: 'ckyc',
+    component: BackendNodeRenderer,
     defaultWidth: 180,
     defaultHeight: 72,
     minWidth: 140,
@@ -83,14 +76,67 @@ export function bootstrapNodeFoundation() {
     resizePolicy: 'fixed',
   })
 
-  // 4. Register Terminal Node Renderer
+  // FLOW
+  const flows = [
+    { type: 'decision', title: 'Decision', desc: 'Branch based on rules', icon: 'GitBranch' },
+    { type: 'switch', title: 'Switch', desc: 'Multi-path routing', icon: 'Waypoints' },
+  ]
+
+  flows.forEach(f => {
+    NodeRegistry.registerNode({
+      type: f.type,
+      metadata: {
+        type: f.type,
+        displayName: f.title,
+        description: f.desc,
+        category: 'Flow',
+        group: 'routing',
+        icon: f.icon,
+        keywords: [f.type, 'route'],
+        tags: ['routing'],
+        schemaVersion: 1,
+      },
+      capabilities: { canHaveFields: false, canRoute: true, isIntegration: false, isTerminal: false },
+      defaultConfig: { title: f.title },
+      initialPorts: [{ id: 'in', type: 'input' }, { id: 'out1', type: 'output' }, { id: 'out2', type: 'output' }],
+    })
+    RendererRegistry.registerRenderer({
+      type: f.type,
+      component: FlowNodeRenderer,
+      defaultWidth: 180,
+      defaultHeight: 72,
+      minWidth: 140,
+      minHeight: 64,
+      supportsPorts: ['top', 'bottom'],
+      resizePolicy: 'fixed',
+    })
+  })
+
+  // ENDING
+  NodeRegistry.registerNode({
+    type: 'manual_review',
+    metadata: {
+      type: 'manual_review',
+      displayName: 'Manual Review',
+      description: 'Send application for manual review',
+      category: 'Ending',
+      group: 'terminal',
+      icon: 'Flag',
+      keywords: ['review', 'end'],
+      tags: ['terminal'],
+      schemaVersion: 1,
+    },
+    capabilities: { canHaveFields: false, canRoute: false, isIntegration: false, isTerminal: true },
+    defaultConfig: { title: 'Manual Review' },
+    initialPorts: [{ id: 'in', type: 'input' }],
+  })
   RendererRegistry.registerRenderer({
-    type: 'terminal',
+    type: 'manual_review',
     component: TerminalNodeRenderer,
-    defaultWidth: 120,
-    defaultHeight: 48,
-    minWidth: 100,
-    minHeight: 40,
+    defaultWidth: 180,
+    defaultHeight: 72,
+    minWidth: 140,
+    minHeight: 64,
     supportsPorts: ['top'],
     resizePolicy: 'fixed',
   })

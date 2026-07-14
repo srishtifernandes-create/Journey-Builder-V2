@@ -47,6 +47,7 @@ export function CanvasEngineProvider({ children }: { children: ReactNode }) {
       instantiate: (type, position) => NodeFactory.createNode(type, position),
       addNode: (node) => useJourneyStore.getState().addNode(node),
       selectNode: (nodeId) => runtime.selection.selectNode(nodeId),
+      onNodeCreated: (nodeId) => runtime.events.emit('nodeCreated', { nodeId, type: 'unknown' })
     })
     runtime.bindNodeCreation(nodeCreation)
 

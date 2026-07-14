@@ -4,6 +4,7 @@ export interface NodeCreationDeps {
   instantiate: (type: string, position: Position) => INode
   addNode: (node: INode) => void
   selectNode: (nodeId: string) => void
+  onNodeCreated: (nodeId: string) => void
 }
 
 export class NodeCreationService {
@@ -13,6 +14,7 @@ export class NodeCreationService {
     const node = this.deps.instantiate(type, position)
     this.deps.addNode(node)
     this.deps.selectNode(node.id)
+    this.deps.onNodeCreated(node.id)
     return node
   }
 }

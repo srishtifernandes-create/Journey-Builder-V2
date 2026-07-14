@@ -33,7 +33,7 @@ export function NodeCard({ item }: NodeCardProps) {
       }}
       className="relative flex items-start gap-3 p-3 rounded-lg border bg-white hover:shadow-sm hover:border-neutral-300 hover:bg-neutral-50/50 cursor-grab active:cursor-grabbing transition-all select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 focus-visible:ring-offset-1 border-neutral-200 overflow-hidden"
     >
-      <div className={`absolute left-0 top-0 bottom-0 w-1 ${item.category === 'Identity' ? 'bg-blue-500' : item.category === 'Routing' ? 'bg-slate-500' : 'bg-neutral-300'}`} />
+      <div className={`absolute left-0 top-0 bottom-0 w-1 ${item.category === 'Screens' ? 'bg-blue-500' : item.category === 'Backend' ? 'bg-purple-500' : item.category === 'Flow' ? 'bg-amber-500' : 'bg-slate-500'}`} />
       
       <div className="w-6 h-6 flex-shrink-0 rounded flex items-center justify-center text-neutral-600 bg-neutral-100 text-[10px] font-mono uppercase">
         {item.icon.slice(0, 2)}
