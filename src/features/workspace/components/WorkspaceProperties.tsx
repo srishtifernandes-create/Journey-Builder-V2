@@ -4,14 +4,21 @@ import { useEmptyStateStage, isCoachMarkDismissed, dismissCoachMark } from '../.
 import { useSelectionStore } from '../../../app/store/selectionStore'
 import { useJourneyStore } from '../../../app/store/journeyStore'
 import { useNodeRenderer } from '../../nodes/hooks/useNodeRenderer'
+import { ScreenPanel } from '../../inspector/components/panels/ScreenPanel'
+import { BackendPanel } from '../../inspector/components/panels/BackendPanel'
+import { FlowPanel } from '../../inspector/components/panels/FlowPanel'
+import { TerminalPanel } from '../../inspector/components/panels/TerminalPanel'
+import { EdgePanel } from '../../inspector/components/panels/EdgePanel'
 
 export function WorkspaceProperties() {
   const { activeInspectorTab, setActiveInspectorTab } = useUIStore()
   const stage = useEmptyStateStage()
   const [coachMarkDismissed, setCoachMarkDismissed] = useState(isCoachMarkDismissed())
   const selectedNodeId = useSelectionStore(s => s.selectedNodeId)
+  const selectedEdgeId = useSelectionStore(s => s.selectedEdgeId)
   const node = useJourneyStore(s => s.nodes.find(n => n.id === selectedNodeId))
-  const { metadata } = useNodeRenderer(node?.type || 'screen')
+  const edge = useJourneyStore(s => s.edges.find(e => e.id === selectedEdgeId))
+  const { metadata } = useNodeRenderer(node?.type || 'otp') // fallback type if no node
 
   const showCoachMark = stage === 'normal' && !coachMarkDismissed
 
@@ -30,10 +37,17 @@ export function WorkspaceProperties() {
     <aside className="w-full h-full bg-white flex flex-col z-20">
       {/* Panel Header */}
       <div className="px-4 py-3 border-b border-neutral-200 flex items-center justify-between bg-neutral-50/50">
-        <h2 className="text-sm font-semibold text-neutral-900">{node ? metadata.displayName : 'Properties'}</h2>
+        <h2 className="text-sm font-semibold text-neutral-900">
+          {node ? metadata.displayName : edge ? 'Transition' : 'Properties'}
+        </h2>
         {node && (
           <span className="text-[10px] bg-neutral-200 text-neutral-600 px-2 py-0.5 rounded font-medium">
             {node.type}
+          </span>
+        )}
+        {edge && (
+          <span className="text-[10px] bg-neutral-200 text-neutral-600 px-2 py-0.5 rounded font-medium">
+            edge
           </span>
         )}
       </div>
@@ -74,37 +88,25 @@ export function WorkspaceProperties() {
       {/* Panel Content (Scrollable Skeleton Container) */}
       <div className="flex-1 overflow-y-auto p-4 space-y-6">
         {node && activeInspectorTab === 'config' && (
-          <div className="space-y-4">
-            <div>
-              <label className="block text-xs font-medium text-neutral-700 mb-1">Title</label>
-              <input
-                type="text"
-                defaultValue={node.config.title}
-                className="w-full text-sm border border-neutral-200 rounded px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-neutral-400 focus:border-transparent"
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-neutral-700 mb-1">Node ID</label>
-              <input
-                type="text"
-                disabled
-                defaultValue={node.id}
-                className="w-full text-sm border border-neutral-200 rounded px-2 py-1.5 bg-neutral-50 text-neutral-500 font-mono text-xs cursor-not-allowed"
-              />
-            </div>
-            <div className="pt-4 border-t border-neutral-100">
-              <p className="text-xs text-neutral-500">More configuration options for {metadata.displayName} will be available here.</p>
-            </div>
-          </div>
+          <>
+            {metadata.category === 'Screens' && <ScreenPanel node={node} />}
+            {metadata.category === 'Backend' && <BackendPanel node={node} />}
+            {metadata.category === 'Flow' && <FlowPanel node={node} />}
+            {metadata.category === 'Ending' && <TerminalPanel node={node} />}
+          </>
         )}
 
-        {node && activeInspectorTab === 'rules' && (
+        {edge && activeInspectorTab === 'config' && (
+          <EdgePanel edge={edge} />
+        )}
+
+        {(node || edge) && activeInspectorTab === 'rules' && (
           <div className="flex items-center justify-center h-32">
             <p className="text-xs text-neutral-400">No rules configured.</p>
           </div>
         )}
 
-        {node && activeInspectorTab === 'history' && (
+        {(node || edge) && activeInspectorTab === 'history' && (
           <div className="flex items-center justify-center h-32">
             <p className="text-xs text-neutral-400">No history available.</p>
           </div>

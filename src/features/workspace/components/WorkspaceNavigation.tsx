@@ -9,10 +9,15 @@ import {
 } from 'lucide-react'
 import { LAYOUT } from '../../../config/layout'
 
-export function WorkspaceNavigation() {
+interface WorkspaceNavigationProps {
+  activePanel: 'flow' | 'library'
+  onChangePanel: (panel: 'flow' | 'library') => void
+}
+
+export function WorkspaceNavigation({ activePanel, onChangePanel }: WorkspaceNavigationProps) {
   const items = [
-    { icon: Workflow, label: 'Canvas', active: true },
-    { icon: Library, label: 'Templates' },
+    { id: 'flow', icon: Workflow, label: 'Screen Flow' },
+    { id: 'library', icon: Library, label: 'Node Library' },
     { icon: FolderClosed, label: 'Assets' },
     { icon: ShieldCheck, label: 'Validation' },
     { icon: History, label: 'History' },
@@ -31,8 +36,9 @@ export function WorkspaceNavigation() {
             key={idx}
             type="button"
             title={item.label}
+            onClick={() => item.id && onChangePanel(item.id as 'flow' | 'library')}
             className={`w-10 h-10 rounded-lg flex items-center justify-center transition-colors group relative focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 ${
-              item.active
+              item.id === activePanel
                 ? 'bg-primary-50 text-primary-500'
                 : 'text-neutral-500 hover:bg-neutral-50 hover:text-neutral-900'
             }`}

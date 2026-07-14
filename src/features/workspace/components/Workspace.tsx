@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { PanelGroup, Panel, PanelResizeHandle } from 'react-resizable-panels'
 import { WorkspaceHeader } from './WorkspaceHeader'
 import { WorkspaceNavigation } from './WorkspaceNavigation'
 import { WorkspaceCanvas } from './WorkspaceCanvas'
 import { WorkspaceProperties } from './WorkspaceProperties'
 import { NodePalette } from '../../palette/components/NodePalette'
+import { ScreenFlowTree } from '../../screenflow/components/ScreenFlowTree'
 import { LAYOUT } from '../../../config/layout'
 import { useSelectionStore } from '../../../app/store/selectionStore'
 
@@ -13,6 +14,7 @@ export function Workspace() {
   const canvasDefaultSize = 100 - inspectorConfig.defaultWidthPercent
   const canvasMinSize = 100 - inspectorConfig.maxWidthPercent
   const selectedNodeId = useSelectionStore((s) => s.selectedNodeId)
+  const [activeLeftPanel, setActiveLeftPanel] = useState<'flow' | 'library'>('flow')
 
   return (
     <div className="flex flex-col h-screen w-screen overflow-hidden bg-neutral-50 text-neutral-900 select-none">
@@ -22,11 +24,15 @@ export function Workspace() {
       {/* Main Workspace Frame */}
       <div className="flex flex-1 w-full overflow-hidden">
         {/* Left Side Fixed Navigation */}
-        <WorkspaceNavigation />
+        <WorkspaceNavigation activePanel={activeLeftPanel} onChangePanel={setActiveLeftPanel} />
 
-        {/* Node Palette */}
-        <div style={{ width: LAYOUT.palette.width }} className="h-full flex-shrink-0">
-          <NodePalette />
+        {/* Left Panel Content */}
+        <div style={{ width: LAYOUT.palette.width }} className="h-full flex-shrink-0 bg-white border-r border-neutral-200">
+          {activeLeftPanel === 'library' ? (
+            <NodePalette />
+          ) : (
+            <ScreenFlowTree />
+          )}
         </div>
 
         {/* Center/Right Resizable Content Area */}
