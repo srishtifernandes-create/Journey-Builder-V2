@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useCallback, useRef } from 'react'
-import { ReactFlow, Background, useReactFlow, ReactFlowProvider, applyNodeChanges, applyEdgeChanges, type NodeChange, type EdgeChange } from '@xyflow/react'
+import { ReactFlow, Background, useReactFlow, ReactFlowProvider, applyNodeChanges, applyEdgeChanges, type NodeChange, type EdgeChange, type Connection } from '@xyflow/react'
 import { ReactFlowAdapter } from '../runtime/adapters/ReactFlowAdapter'
 import { useCanvasEngine } from './CanvasEngineProvider'
 import { useJourneyStore } from '../../../app/store/journeyStore'
@@ -166,6 +166,20 @@ function CanvasViewportInner() {
     setEdges(updatedEdges)
   }, [setEdges, selectedEdgeId, adapter])
 
+  const onConnect = useCallback((params: Connection) => {
+    if (!params.source || !params.target) return
+    if (params.source === params.target) return
+
+    const newEdge = {
+      id: `edge-${crypto.randomUUID()}`,
+      source: params.source,
+      target: params.target,
+      sourceHandle: params.sourceHandle || undefined,
+      targetHandle: params.targetHandle || undefined,
+    }
+    useJourneyStore.getState().addEdge(newEdge)
+  }, [])
+
   useEffect(() => {
     // Lifecycle: Mount Adapter -> bind reactFlowInstance -> Register Managers
     adapter.setInstance(reactFlow)
@@ -215,7 +229,8 @@ function CanvasViewportInner() {
         onEdgesChange={onEdgesChange}
         fitView
         nodesDraggable={true} // enable node dragging
-        nodesConnectable={false}
+        nodesConnectable={true}
+        onConnect={onConnect}
         elementsSelectable={true} // enable elements selection for nodes
         zoomOnScroll={true}
         zoomOnPinch={true}
@@ -225,7 +240,6 @@ function CanvasViewportInner() {
         maxZoom={2.0}
         onMove={(_, viewport) => adapter.triggerViewportChange(viewport)}
         onPaneClick={(e) => adapter.triggerPaneClick(e.nativeEvent)}
-        onPaneDoubleClick={(e) => adapter.triggerPaneDoubleClick(e.nativeEvent)}
         onPaneContextMenu={(e) => {
           e.preventDefault()
           adapter.triggerPaneContextMenu(e.nativeEvent)

@@ -1,18 +1,18 @@
 import React from 'react'
 import { Handle, Position } from '@xyflow/react'
-import { CheckCircle2 } from 'lucide-react'
+import { Play } from 'lucide-react'
 import clsx from 'clsx'
 import type { INode } from '../contracts/INode'
 import { useNodeRenderer } from '../hooks/useNodeRenderer'
 
-export interface TerminalNodeRendererProps {
+export interface ActionNodeRendererProps {
   data: {
     node: INode
   }
   selected?: boolean
 }
 
-export function TerminalNodeRenderer({ data, selected }: TerminalNodeRendererProps) {
+export function ActionNodeRenderer({ data, selected }: ActionNodeRendererProps) {
   const { node } = data
   const { metadata } = useNodeRenderer(node.type)
   const title = node.config.title || metadata.displayName
@@ -26,7 +26,7 @@ export function TerminalNodeRenderer({ data, selected }: TerminalNodeRendererPro
     <div
       tabIndex={0}
       className={clsx(
-        'node node-screen',
+        'node node-action',
         selected && 'state-selected',
         isError && 'state-error',
         isIncomplete && 'state-incomplete',
@@ -41,27 +41,24 @@ export function TerminalNodeRenderer({ data, selected }: TerminalNodeRendererPro
         className={clsx('port in', selected && 'filled')}
       />
 
-      <div className="row-top">
-        <span className="kind">
-          <CheckCircle2 className="w-3 h-3 text-neutral-400" />
-          Terminal
-        </span>
-        <span className={clsx(
-          'status-dot',
-          isError ? 'error' : isIncomplete ? 'warn' : 'ok'
-        )}></span>
+      <span className="action-icon">
+        <Play className="w-2.5 h-2.5 fill-current" />
+      </span>
+
+      <div className="text-block">
+        <span className="kind">Action</span>
+        <span className="name truncate w-[90px]">{title}</span>
       </div>
 
-      <div className="name truncate">{title}</div>
-
-      <div className="row-bottom">
-        <span className="type-badge" style={{ background: 'var(--success-20)', color: 'var(--success-600)' }}>
-          END
-        </span>
-        <span className="field-count">Exit Node</span>
-      </div>
+      {/* Output Port Handle */}
+      <Handle
+        type="source"
+        position={Position.Bottom}
+        id="out"
+        className={clsx('port out', selected && 'filled')}
+      />
     </div>
   )
 }
 
-export default TerminalNodeRenderer
+export default ActionNodeRenderer

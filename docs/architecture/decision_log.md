@@ -299,3 +299,31 @@ Decision 014.
 ### Date
 
 14 July 2026
+
+## Decision 016
+
+### Title
+
+Workflow Contracts are executable specifications; implementation derives from documentation, not the reverse.
+
+### Reason
+
+The project has transitioned from platform engineering to product development, grounded in real workflow contracts (`docs/workflows/WF_xx/*`) rather than generic canvas patterns or implementation-first coding.
+
+Prior to this decision, implementation details (node registrations, renderer CSS classes, inspector panels) had drifted out of sync with each other and with the workflow contract they were meant to serve — for example, registered node types that didn't match any node in the WF01 contract's inventory, and CSS class names referenced by renderers with no corresponding stylesheet anywhere in the codebase. This drift was possible because there was no explicit, ordered rule for which document wins when sources disagree, and no explicit rule against encoding business/workflow logic directly in code (`switch`/`if` on `node.type`).
+
+This decision establishes that workflow contracts are the executable specification for business behaviour, node inventory, runtime, rules, and variables — not a description written after the fact. Implementation must always derive from the workflow contract and its supporting documentation hierarchy (see `docs/architecture/SOURCE_OF_TRUTH.md`), never the other way around. When implementation and documentation disagree, implementation is changed to match documentation, not vice versa.
+
+This decision also establishes that node-type-specific behaviour must be expressed through declarative schemas (`INodeSchema`, `IInspectorSchema`, `IRuleSchema`, `IVariableSchema`) rather than hardcoded branches on `node.type`, so that each new workflow requires progressively less framework code — ideally, eventually, only new documentation and schema registration.
+
+### Invariants
+
+- Every implementation change traces back to a workflow contract, or to an architecture/design document that itself does not conflict with a higher-priority workflow contract (see `docs/architecture/SOURCE_OF_TRUTH.md` for the full hierarchy).
+- No workflow-specific `if (node.type === ...)` or `switch (node.type)` branching is introduced in application code; node-type-specific behaviour is expressed through schema data consumed generically.
+- When a workflow contract's node inventory does not define something as its own canvas node, it is not implemented as one — see the "Business Behaviour vs. Canvas Behaviour" section in `docs/architecture/NODE_MODEL.md`.
+- Documentation ambiguity is resolved by consulting the hierarchy in `SOURCE_OF_TRUTH.md` and the resolution process in `AI_IMPLEMENTATION_RULES.md` §9 before asking the user; the user is asked only when the ambiguity would change business behaviour.
+- Every implementation milestone follows the sequence in `AI_IMPLEMENTATION_RULES.md` §8 (read docs → review implementation → plan → approval → implement → build → lint → Playwright verification → stop) without auto-continuing past "stop."
+
+### Date
+
+14 July 2026

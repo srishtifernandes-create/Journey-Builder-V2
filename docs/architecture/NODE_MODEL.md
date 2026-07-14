@@ -99,3 +99,15 @@ Every node carries `schemaVersion`, sourced from the type's registered `NodeMeta
 ## Extending the Model
 
 Business-specific fields must be introduced through `config`, not by adding new top-level fields to `INode`. Adding a new node type requires a new `NodeRegistration` (metadata, capabilities, default config, initial ports) — it never requires changing `INode` itself.
+
+## Business Behaviour vs. Canvas Behaviour
+
+Canvas nodes are **authoring primitives** — the things a Product Manager drags, drops, connects, and configures while building a journey on the canvas. They are not a one-to-one mirror of every internal implementation step a node performs at runtime.
+
+Business logic — validation rules, enablement conditions, URL generation, API payload shaping, and similar behaviors — lives **inside a node's schema** (its `config`, `IInspectorSchema`, `IRuleSchema`, and `IVariableSchema`, per `docs/architecture/AI_IMPLEMENTATION_RULES.md`), not as separate canvas nodes.
+
+**Correct:** a "Consent Screen" node's schema declares that it performs mandatory-field validation, enables a Send Consent CTA once valid, and produces a consent URL — all as behavior described within that one node's contract.
+
+**Incorrect:** splitting those same behaviors into standalone "Validation Node", "Enable CTA Node", and "Generate URL Node" canvas nodes, when the workflow contract does not define them as separate authorable nodes.
+
+Implementation behaviour must never appear as separate canvas nodes unless a workflow contract (`docs/workflows/WF_xx/*`) explicitly models it that way. If a workflow contract's node inventory lists something as its own node, it is one; otherwise, it is a behavior inside a node's schema. See `docs/architecture/SOURCE_OF_TRUTH.md` for how conflicts between a workflow contract and any other doc or the current implementation are resolved.

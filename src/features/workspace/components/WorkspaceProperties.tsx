@@ -88,12 +88,11 @@ export function WorkspaceProperties() {
       {/* Panel Content (Scrollable Skeleton Container) */}
       <div className="flex-1 overflow-y-auto p-4 space-y-6">
         {node && activeInspectorTab === 'config' && (
-          <>
-            {metadata.category === 'Screens' && <ScreenPanel node={node} />}
-            {metadata.category === 'Backend' && <BackendPanel node={node} />}
-            {metadata.category === 'Flow' && <FlowPanel node={node} />}
-            {metadata.category === 'Ending' && <TerminalPanel node={node} />}
-          </>
+          <div className="flex flex-col items-center justify-center py-12 text-center">
+            <p className="text-sm text-neutral-500 font-medium">
+              Configuration for this node will be implemented in Phase 2.
+            </p>
+          </div>
         )}
 
         {edge && activeInspectorTab === 'config' && (

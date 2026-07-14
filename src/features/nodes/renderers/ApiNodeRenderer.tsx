@@ -1,21 +1,22 @@
 import React from 'react'
 import { Handle, Position } from '@xyflow/react'
-import { CheckCircle2 } from 'lucide-react'
+import { Webhook } from 'lucide-react'
 import clsx from 'clsx'
 import type { INode } from '../contracts/INode'
 import { useNodeRenderer } from '../hooks/useNodeRenderer'
 
-export interface TerminalNodeRendererProps {
+export interface ApiNodeRendererProps {
   data: {
     node: INode
   }
   selected?: boolean
 }
 
-export function TerminalNodeRenderer({ data, selected }: TerminalNodeRendererProps) {
+export function ApiNodeRenderer({ data, selected }: ApiNodeRendererProps) {
   const { node } = data
   const { metadata } = useNodeRenderer(node.type)
   const title = node.config.title || metadata.displayName
+  const endpoint = node.config.endpoint || 'POST /api/v1/execute'
 
   const status = node.uiState.status
   const isError = status === 'error'
@@ -26,7 +27,7 @@ export function TerminalNodeRenderer({ data, selected }: TerminalNodeRendererPro
     <div
       tabIndex={0}
       className={clsx(
-        'node node-screen',
+        'node node-api',
         selected && 'state-selected',
         isError && 'state-error',
         isIncomplete && 'state-incomplete',
@@ -42,26 +43,34 @@ export function TerminalNodeRenderer({ data, selected }: TerminalNodeRendererPro
       />
 
       <div className="row-top">
-        <span className="kind">
-          <CheckCircle2 className="w-3 h-3 text-neutral-400" />
-          Terminal
+        <span className="api-icon">
+          <Webhook className="w-3 h-3 text-[#4DC4E8]" />
         </span>
+        <div>
+          <div className="kind">API Check</div>
+          <div className="name truncate w-[110px]">{title}</div>
+        </div>
+      </div>
+
+      <span className="api-endpoint">{endpoint}</span>
+
+      <span className="api-timing">
         <span className={clsx(
           'status-dot',
-          isError ? 'error' : isIncomplete ? 'warn' : 'ok'
+          isError ? 'error' : isIncomplete ? 'warn' : 'pending'
         )}></span>
-      </div>
+        Configured
+      </span>
 
-      <div className="name truncate">{title}</div>
-
-      <div className="row-bottom">
-        <span className="type-badge" style={{ background: 'var(--success-20)', color: 'var(--success-600)' }}>
-          END
-        </span>
-        <span className="field-count">Exit Node</span>
-      </div>
+      {/* Output Port Handle */}
+      <Handle
+        type="source"
+        position={Position.Bottom}
+        id="out"
+        className={clsx('port out', selected && 'filled')}
+      />
     </div>
   )
 }
 
-export default TerminalNodeRenderer
+export default ApiNodeRenderer
