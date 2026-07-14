@@ -7,9 +7,9 @@ export interface NodeBadgeProps {
 }
 
 const STATUS_COLORS: Record<NodeUIState['configCompleteStatus'], string> = {
-  not_started: 'bg-neutral-200 border-neutral-300',
-  incomplete: 'bg-amber-100 border-amber-300 text-amber-700',
-  complete: 'bg-emerald-100 border-emerald-300 text-emerald-700',
+  not_started: 'bg-neutral-100 border-neutral-200 text-neutral-500',
+  incomplete: 'bg-neutral-100 border-neutral-200 text-neutral-600',
+  complete: 'bg-neutral-100 border-neutral-200 text-neutral-800',
 }
 
 const STATUS_LABELS: Record<NodeUIState['configCompleteStatus'], string> = {

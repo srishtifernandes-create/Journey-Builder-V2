@@ -25,14 +25,15 @@ export function BaseNodeRenderer({ node, metadata, definition, selected, childre
       className={clsx(
         'relative bg-white border rounded-xl shadow-sm transition-all duration-200 min-h-[64px] flex flex-col justify-between group p-3 select-none',
         'outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-1',
-        'hover:shadow-md hover:border-neutral-400',
+        'hover:shadow-md hover:border-neutral-300',
         selected
-          ? 'border-primary-500 ring-2 ring-primary-100'
+          ? 'border-neutral-400 shadow-md ring-1 ring-neutral-400'
           : 'border-neutral-200',
         isDisabled && 'opacity-50 pointer-events-none'
       )}
       style={{ width: '100%', height: '100%' }}
     >
+      <div className={`absolute top-0 left-0 right-0 h-1 rounded-t-xl ${metadata.category === 'Identity' ? 'bg-blue-500' : metadata.category === 'Routing' ? 'bg-slate-500' : 'bg-neutral-300'}`} />
       <NodePorts ports={node.ports} supportsPorts={definition.supportsPorts} />
 
       {/* Node Header Row */}

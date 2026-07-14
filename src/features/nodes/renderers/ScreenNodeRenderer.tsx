@@ -18,11 +18,11 @@ export function ScreenNodeRenderer({ data, selected }: ScreenNodeRendererProps) 
 
   return (
     <BaseNodeRenderer node={node} metadata={metadata} definition={definition} selected={selected}>
-      <div className="flex items-center gap-2">
-        <div className="w-6 h-6 rounded-lg bg-primary-50 flex items-center justify-center text-primary-600">
+      <div className="flex items-center gap-2 mt-1">
+        <div className="w-6 h-6 rounded bg-neutral-100 flex items-center justify-center text-neutral-600">
           <Monitor className="w-3.5 h-3.5" />
         </div>
-        <span className="truncate text-xs font-semibold text-neutral-800">
+        <span className="truncate text-xs font-medium text-neutral-800">
           {title}
         </span>
       </div>

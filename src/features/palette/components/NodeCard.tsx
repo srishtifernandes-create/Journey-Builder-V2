@@ -31,16 +31,16 @@ export function NodeCard({ item }: NodeCardProps) {
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') handleClick()
       }}
-      className={`flex items-start gap-2 p-2 rounded-lg border bg-white hover:border-primary-400 hover:bg-primary-50/40 cursor-grab active:cursor-grabbing transition-colors select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 ${
-        shouldPulse ? 'border-primary-400 animate-pulse' : 'border-neutral-200'
-      }`}
+      className="relative flex items-start gap-3 p-3 rounded-lg border bg-white hover:shadow-sm hover:border-neutral-300 hover:bg-neutral-50/50 cursor-grab active:cursor-grabbing transition-all select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 focus-visible:ring-offset-1 border-neutral-200 overflow-hidden"
     >
-      <div className="w-7 h-7 flex-shrink-0 rounded-md bg-primary-50 flex items-center justify-center text-primary-600 text-[10px] font-mono uppercase">
+      <div className={`absolute left-0 top-0 bottom-0 w-1 ${item.category === 'Identity' ? 'bg-blue-500' : item.category === 'Routing' ? 'bg-slate-500' : 'bg-neutral-300'}`} />
+      
+      <div className="w-6 h-6 flex-shrink-0 rounded flex items-center justify-center text-neutral-600 bg-neutral-100 text-[10px] font-mono uppercase">
         {item.icon.slice(0, 2)}
       </div>
-      <div className="min-w-0">
-        <div className="text-xs font-semibold text-neutral-900 truncate">{item.displayName}</div>
-        <div className="text-[10px] text-neutral-500 truncate">{item.description}</div>
+      <div className="min-w-0 flex-1">
+        <div className="text-xs font-medium text-neutral-900 truncate">{item.displayName}</div>
+        <div className="text-[10px] text-neutral-500 truncate mt-0.5">{item.description}</div>
       </div>
     </div>
   )
