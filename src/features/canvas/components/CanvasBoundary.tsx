@@ -1,4 +1,6 @@
 import React, { ReactNode } from 'react'
+import { useCanvasRuntime } from '../hooks/useCanvasRuntime'
+import { useEmptyStateStage } from '../hooks/useEmptyStateStage'
 
 export interface CanvasBoundaryProps {
   children: ReactNode
@@ -6,6 +8,9 @@ export interface CanvasBoundaryProps {
 }
 
 export function CanvasBoundary({ children, state = 'empty' }: CanvasBoundaryProps) {
+  const runtime = useCanvasRuntime()
+  const stage = useEmptyStateStage()
+
   if (state === 'loading') {
     return (
       <div className="w-full h-full flex items-center justify-center bg-neutral-50 text-neutral-500 font-sans">
@@ -33,40 +38,42 @@ export function CanvasBoundary({ children, state = 'empty' }: CanvasBoundaryProp
       {/* React Flow Viewport always mounts in the background */}
       {children}
 
-      {/* Overlay Empty State Card */}
-      {state === 'empty' && (
+      {/* FTUE Stage 1: true-empty — no nodes placed yet */}
+      {stage === 'true-empty' && (
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
-          <div className="pointer-events-auto w-full max-w-sm p-6 bg-white border border-neutral-200 rounded-xl shadow-sm text-center">
-            <div className="w-12 h-12 rounded-lg bg-primary-50 flex items-center justify-center mx-auto mb-4 text-primary-500">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="lucide lucide-git-branch"
-              >
-                <line x1="6" x2="6" y1="3" y2="15" />
-                <circle cx="18" cy="6" r="3" />
-                <circle cx="6" cy="18" r="3" />
-                <path d="M18 9a9 9 0 0 1-9 9" />
+          <div className="pointer-events-auto w-full max-w-sm p-6 bg-white border border-neutral-200 rounded-xl text-center">
+            <div className="w-16 h-12 mx-auto mb-4 opacity-50" aria-hidden="true">
+              <svg viewBox="0 0 64 48" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+                <rect x="2" y="4" width="20" height="14" rx="3" stroke="#9CA3AF" strokeWidth="1.5" strokeDasharray="3 2" />
+                <rect x="42" y="4" width="20" height="14" rx="3" stroke="#9CA3AF" strokeWidth="1.5" strokeDasharray="3 2" />
+                <rect x="22" y="30" width="20" height="14" rx="3" stroke="#9CA3AF" strokeWidth="1.5" strokeDasharray="3 2" />
+                <path d="M12 18 L27 30" stroke="#9CA3AF" strokeWidth="1.5" strokeDasharray="3 2" />
+                <path d="M52 18 L37 30" stroke="#9CA3AF" strokeWidth="1.5" strokeDasharray="3 2" />
               </svg>
             </div>
-            <h2 className="text-base font-semibold text-neutral-900 mb-1">Journey Builder</h2>
+            <h2 className="text-base font-semibold text-neutral-900 mb-1">Start your journey</h2>
             <p className="text-sm text-neutral-500 mb-4">
-              Start by adding your first screen.<br />
-              <span className="text-xs text-neutral-400">Node creation becomes available in Sprint 04.</span>
+              Every journey begins with a Welcome Screen — the first step your applicant sees.
             </p>
             <button
               type="button"
-              className="w-full h-9 px-4 rounded-lg bg-primary-500 text-white font-medium text-sm hover:bg-primary-600 transition-colors shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
+              onClick={() => runtime.createNodeAtViewportCenter('screen')}
+              className="w-full h-9 px-4 rounded-lg bg-primary-500 text-white font-medium text-sm hover:bg-primary-600 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
             >
-              Add Screen Node
+              + Add Welcome Screen
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* FTUE Stage 2: first-node-placed — nudge toward building a flow */}
+      {stage === 'first-node-placed' && (
+        <div className="absolute bottom-8 right-8 pointer-events-none z-10 flex items-center gap-2">
+          <div className="pointer-events-auto flex items-center gap-2 bg-white border border-primary-200 rounded-full pl-2 pr-4 py-2">
+            <span className="w-7 h-7 rounded-full bg-primary-500 text-white flex items-center justify-center text-base font-semibold leading-none">
+              +
+            </span>
+            <span className="text-xs font-medium text-neutral-700">Add next screen</span>
           </div>
         </div>
       )}

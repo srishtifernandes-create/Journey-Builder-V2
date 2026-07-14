@@ -6,16 +6,23 @@ export class SelectionManager implements ISelectionManager {
   private events: CanvasEvents
   private adapter: ICanvasAdapter | null = null
   private selection: SelectionState = { nodes: [], edges: [] }
+  private unsubscribeAdapterSelection: (() => void) | null = null
 
   constructor(events: CanvasEvents) {
     this.events = events
   }
 
   public setAdapter(adapter: ICanvasAdapter) {
+    // Dispose the previous adapter's subscription before registering a new
+    // one — otherwise each rebind stacks another listener on the old
+    // adapter, causing every subsequent selection event to be relayed once
+    // per stacked listener instead of once per event.
+    this.unsubscribeAdapterSelection?.()
+
     this.adapter = adapter
-    
+
     // Subscribe to selection change event on the adapter
-    this.adapter.onSelectionChange((selection) => {
+    this.unsubscribeAdapterSelection = this.adapter.onSelectionChange((selection) => {
       this.selection = selection
       this.events.emit('selectionChange', selection)
     })

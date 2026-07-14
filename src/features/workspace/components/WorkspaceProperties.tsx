@@ -1,8 +1,18 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useUIStore } from '../../../app/store/uiStore'
+import { useEmptyStateStage, isCoachMarkDismissed, dismissCoachMark } from '../../canvas/hooks/useEmptyStateStage'
 
 export function WorkspaceProperties() {
   const { activeInspectorTab, setActiveInspectorTab } = useUIStore()
+  const stage = useEmptyStateStage()
+  const [coachMarkDismissed, setCoachMarkDismissed] = useState(isCoachMarkDismissed())
+
+  const showCoachMark = stage === 'normal' && !coachMarkDismissed
+
+  const handleDismissCoachMark = () => {
+    dismissCoachMark()
+    setCoachMarkDismissed(true)
+  }
 
   const tabs: Array<{ id: 'config' | 'rules' | 'history'; label: string }> = [
     { id: 'config', label: 'Config' },
@@ -19,6 +29,21 @@ export function WorkspaceProperties() {
           Sprint 02
         </span>
       </div>
+
+      {showCoachMark && (
+        <div className="px-4 py-3 bg-primary-50 border-b border-primary-100 flex items-start justify-between gap-3">
+          <p className="text-xs text-primary-700 leading-snug">
+            Select a node on the canvas to configure it here.
+          </p>
+          <button
+            type="button"
+            onClick={handleDismissCoachMark}
+            className="text-primary-500 hover:text-primary-700 text-xs font-medium flex-shrink-0 focus:outline-none"
+          >
+            Got it
+          </button>
+        </div>
+      )}
 
       {/* Tabs list */}
       <div className="flex border-b border-neutral-200 bg-neutral-50">
